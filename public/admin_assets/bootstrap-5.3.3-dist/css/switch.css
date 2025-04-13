@@ -1,0 +1,14 @@
+td .form-check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin-left: 20px;
+}
+
+td .form-check-input {
+    width: 2rem;
+    height: 1rem;
+    margin: 0 auto;
+    cursor: pointer;
+}

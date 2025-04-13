@@ -1,0 +1,35 @@
+/* Hover effect to change the image background */
+.profile-image:hover {
+    background-color: rgba(0, 0, 255, 0.2); /* Light blue background on hover */
+}
+
+/* Overlay text styling */
+.overlay-text {
+    visibility: hidden; /* Hidden by default */
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.5
+    ); /* Slight dark background for contrast */
+    border-radius: 50%; /* To keep the overlay text in the circle */
+    font-size: 14px;
+    padding: 10px;
+    z-index: 2;
+}
+
+/* Show the overlay text when hovering over the profile image */
+.profile-image:hover ~ .overlay-text {
+    visibility: visible;
+}
+
+/* When hovering, trigger the input to appear */
+.profile-image:hover {
+    cursor: pointer; /* Make it appear clickable */
+}
+
+/* Make the hidden file input visible and clickable on hover */
+.profile-image:hover ~ #imageUpload {
+    opacity: 1; /* Make the input fully visible */
+    cursor: pointer; /* Ensure it's clickable */
+}

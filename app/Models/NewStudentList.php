@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class NewStudentList extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'image',
+        'studentLRN',
+        'studentSection',
+        'school_year',
+        'studentName_ext',
+        'studentFirst_name',
+        'studentMiddle_name',
+        'studentLast_name',
+        'studentGender',
+        'studentBirthdate',
+        'studentBirthorder',
+        'studentAddress',
+        'studentHobby',
+        'studentFavorite',
+        'studentTuition_amount',
+        'studentTuition_discount',
+        'discountedTuition_amount',
+    ];
+}
