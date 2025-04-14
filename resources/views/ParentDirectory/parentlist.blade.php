@@ -41,7 +41,7 @@
                         </button>
                     </div>
                 @endif
-                <div class="table-responsive">
+                <div class="table-responsive table-sm">
                     <table id="myTable" class="table table-striped" style="width:100%">
                         <thead class="table-primary text-center">
                             <tr>
@@ -68,11 +68,11 @@
                                             <a href="{{ route('ParentDirectory.show', $prnts->id) }}" type="button" class="btn btn-secondary" style="font-size: 10px;">View</a>
                                             @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
                                                 <a href="{{ route('ParentDirectory.edit', $prnts->id) }}" type="button" class="btn btn-warning mx-1" style="font-size: 10px;">Edit</a>
-                                                <!-- Button trigger for remove modal -->
+                                                <!-- button trigger for remove modal -->
                                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $prnts->id }}" style="font-size: 10px;">
                                                 Remove
                                                 </button>
-                                                <!-- Remove Modal -->
+                                                <!-- remove modal -->
                                                 <div class="modal fade" id="deleteModal{{ $prnts->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
@@ -105,7 +105,7 @@
                     </table>
                 </div>
 
-                <!-- Parent form -->
+                <!-- parent form -->
                 <div class="modal fade" id="reg-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content">
@@ -136,7 +136,7 @@
                                                         <select class="form-control" name="student_id[]" required>
                                                             <option value="" disabled selected>- Select Student -</option>
                                                             
-                                                            <!-- Display grouped students -->
+                                                            <!-- display grouped students -->
                                                             @foreach ($groupedStudentsMap as $group_id => $group)
                                                                 <option value="group_{{ $group_id }}">
                                                                     [
@@ -147,7 +147,7 @@
                                                                 </option>
                                                             @endforeach
 
-                                                            <!-- Display individual students (excluding those already in groups) -->
+                                                            <!-- display individual students (excluding those already in groups) -->
                                                             @foreach($students as $student)
                                                                 @php
                                                                     $isGrouped = false;

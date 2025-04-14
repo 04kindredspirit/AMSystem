@@ -35,7 +35,7 @@
                         </button>
                     </div>
                 @endif
-                <div class="table-responsive">
+                <div class="table-responsive table-sm">
                     <table class="table table-striped table table-hover" style="width:100%">
                         <thead class="table-primary text-center">
                             <tr>

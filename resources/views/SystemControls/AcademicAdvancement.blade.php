@@ -52,15 +52,15 @@
                     </div>
                 @endif
                 
-                <div class="table-responsive">
+                <div class="table-responsive table-sm">
                     <table id="myTable" class="table table-striped table-hover" style="width:100%">
                         <thead class="table-primary">
                             <tr>
-                                <th width="60%">Name</th>
-                                <th width="40%">Section</th>
+                                <th class="text-center" width="60%">Name</th>
+                                <th class="text-center" width="40%">Section</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="text-center">
                             @if($studentsWithZeroBalance->isEmpty())
                                 <tr>
                                     <td colspan="2" class="text-center">No students with zero balance found.</td>

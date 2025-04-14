@@ -62,7 +62,7 @@ class AuthController extends Controller
         $email = Str::lower($request->input('email'));
         $key = 'login:attempts:' . $email;
         $maxAttempts = 2; 
-        $decayMinutes = 1; 
+        $decaySeconds = 60;
 
         // Check if too many attempts
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
@@ -72,7 +72,7 @@ class AuthController extends Controller
 
         // check credentials
         if (!Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
-            RateLimiter::hit($key, $decayMinutes * 60);
+            RateLimiter::hit($key, $decaySeconds / 2);
 
             return back()->with('error', "The credentials don't match our records.")->onlyInput('email');
         }

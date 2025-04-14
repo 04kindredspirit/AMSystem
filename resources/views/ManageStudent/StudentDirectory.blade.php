@@ -59,7 +59,7 @@
                                     <tr>
                                         <td><img src="{{ asset($student->image ?? 'admin_assets/img/undraw_profile.svg') }}" 
                                                 class="img-fluid rounded-circle mx-auto d-block" 
-                                                style="width: 40px; height: 40px; object-fit: cover;" 
+                                                style="width: 35px; height: 35px; object-fit: cover;" 
                                                 alt="Profile Image">
                                         </td>
                                         <td>{{ $student->studentLRN ?? '' }}</td>
