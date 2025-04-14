@@ -8,6 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>AMSystem - @yield('title')</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link href="{{ asset('admin_assets/vendor/font-awesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('admin_assets/bootstrap-5.3.3-dist/css/bootstrap.css') }}" rel="stylesheet" type="text/css">
     <link
@@ -57,11 +58,9 @@
                 <div id="collapseTwo" class="collapse @if(request()->routeIs('ManageStudent/addstudent') || request()->routeIs('ManageStudent/StudentDirectory')) show @endif" 
                     aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        @if(auth()->user()->role != 'Teacher')
                         <a class="collapse-item @if(request()->routeIs('ManageStudent/addstudent')) bg-gray-200 text-primary font-weight-bold @endif" href="{{ route('ManageStudent/addstudent') }}">
                             <i class="fas fa-user-plus mr-1 text-danger"></i> Add Student
                         </a>
-                        @endif
                         <a class="collapse-item @if(request()->routeIs('ManageStudent/StudentDirectory')) bg-gray-200 text-primary font-weight-bold @endif" href="{{ route('ManageStudent/StudentDirectory') }}">
                             <i class="fas fa-address-book mr-1 text-danger"></i> Student Directory
                         </a>

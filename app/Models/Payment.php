@@ -10,7 +10,7 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $table = 'payment_records'; // Make sure this matches your table name
+    protected $table = 'payment_records'; 
 
     protected $fillable = [
         'paymentDate',
@@ -23,11 +23,17 @@ class Payment extends Model
         'paymentPeriod',
         'balance',
         'record_type',
+        'user_id',
     ];
 
     public function student()
     {
         return $this->belongsTo(StudentList::class, 'studentLrn', 'studentLRN');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     protected static function boot()

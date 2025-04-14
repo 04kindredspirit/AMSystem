@@ -17,9 +17,7 @@
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between">
                     <h3 class="mb-0">Student Directory</h3>
-                    @if (auth()->user()->role != 'Teacher')
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#reg-modal">+ Add New Student</button>
-                    @endif
                 </div>
                 <hr class="border-secondary">
                 @if (session('success'))
@@ -43,14 +41,14 @@
                     </div>
                 @endif
                 <div class="table-responsive table-sm">
-                    <table id="myTable" class="table table-striped table-hover" style="width:100%">
-                        <thead class="table-primary text-center">
+                    <table id="myTable" class="table table-striped table-hover text-center" style="width:100%">
+                        <thead class="table-primary">
                             <tr>
-                                <th></th>
-                                <th>LRN</th>
-                                <th>Name</th>
-                                <th>Section</th>
-                                <th>Action</th>
+                                <th class="text-center"></th>
+                                <th class="text-center">LRN</th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Section</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody class="text-dark">

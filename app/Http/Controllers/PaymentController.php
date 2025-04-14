@@ -39,7 +39,7 @@ class PaymentController
 
         // check if the student has already paid for this period in the current grade level
         $existingPayment = Payment::where('studentLrn', $studentLrn)
-            ->where('studentPayment_section', $student->studentSection) // Scope to current grade level
+            ->where('studentPayment_section', $student->studentSection) // scope to current grade level
             ->where('paymentPeriod', $paymentPeriod)
             ->first();
 
@@ -70,10 +70,10 @@ class PaymentController
             return redirect()->back()->with('error', 'Student not found.');
         }
 
-        // Skip validation for "Remaining Balance"
+        // skip validation for remaining balance
         if ($request->paymentPeriod !== 'Remaining Balance') {
             $existingPayment = Payment::where('studentLrn', $request->paymentLrn)
-                ->where('studentPayment_section', $student->studentSection) // Scope to current grade level
+                ->where('studentPayment_section', $student->studentSection) // scope to current grade level
                 ->where('paymentPeriod', $request->paymentPeriod)
                 ->first();
 
@@ -101,7 +101,7 @@ class PaymentController
         $payment->paymentTuitionAmount = $request->tuitionAmount;
         $payment->paymentPeriod = $request->paymentPeriod;
         $payment->balance = $balance;
-
+        $payment->user_id = auth()->id();
         $payment->save();
 
         return redirect()->route('PaymentRecords')->with('success', 'Payment data saved successfully!');

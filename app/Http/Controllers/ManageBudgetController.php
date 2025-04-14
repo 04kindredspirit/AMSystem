@@ -110,7 +110,7 @@ class ManageBudgetController extends Controller
             'amount' => [
                 'required',
                 'numeric',
-                'min:0',
+                'min: 0',
                 function ($attribute, $value, $fail) {
                     $totalAllocations = Allocation::sum('amount');
                     $totalReplenishments = CategoryAllocation::sum('amount');

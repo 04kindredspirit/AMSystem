@@ -62,9 +62,11 @@
                                 <th class="text-center">Amount Paid</th>
                                 <th class="text-center">Payment Period</th>
                                 <th class="text-center">Type</th>
+                                <th class="text-center">Transact By</th>
+
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="font-size: 12px;">
                             @if($payment->count() > 0)
                                 @foreach($payment as $pymnt)
                                 <tr>
@@ -82,6 +84,7 @@
                                             Payment
                                         @endif
                                     </td>
+                                    <td class="text-center">{{ $pymnt->user ? $pymnt->user->first_name . ' ' . $pymnt->user->last_name : 'N/A' }}</td>
                                 </tr>
                                 @endforeach
                             @endif

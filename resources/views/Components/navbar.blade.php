@@ -15,7 +15,6 @@
                 <img class="img-profile rounded-circle" style="width: 40px; height: 40px; object-fit:cover; border-radius: 50%; "
                 src="{{ asset(auth()->user()->image ?? 'admin_assets/img/undraw_profile.svg' ) }}">
             </a>
-            <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                 aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="{{ route('logout') }}" data-toggle="modal" data-target="#logoutModal">

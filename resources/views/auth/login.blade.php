@@ -8,6 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>AMSystem - Login</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link href="{{ asset('admin_assets/vendor/font-awesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -50,7 +51,7 @@
                                         </div>
                                     @endif
                                     @if (session('status'))
-                                        <div class="alert alert-success">
+                                        <div class="alert alert-success" style="font-size: 12px;">
                                             {{ session('status') }}
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>

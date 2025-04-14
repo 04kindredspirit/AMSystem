@@ -42,16 +42,16 @@
                     </div>
                 @endif
                 <div class="table-responsive table-sm">
-                    <table id="myTable" class="table table-striped" style="width:100%">
-                        <thead class="table-primary text-center">
+                    <table id="myTable" class="table table-striped text-center" style="width:100%">
+                        <thead class="table-primary">
                             <tr>
-                                <th>Full Name</th>
-                                <th>Birthday</th>
-                                <th>Mobile</th>
-                                <th>Email</th>
-                                <th>Occupation</th>
-                                <th>Address</th>
-                                <th>Action</th>
+                                <th class="text-center">Full Name</th>
+                                <th class="text-center">Birthday</th>
+                                <th class="text-center">Mobile</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Occupation</th>
+                                <th class="text-center">Address</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
