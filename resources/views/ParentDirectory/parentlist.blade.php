@@ -41,7 +41,7 @@
                         </button>
                     </div>
                 @endif
-                <div class="table-responsive table-sm">
+                <div class="table-responsive">
                     <table id="myTable" class="table table-striped text-center" style="width:100%">
                         <thead class="table-primary">
                             <tr>
@@ -67,35 +67,37 @@
                                         <td class="text-center d-flex justify-content-between">
                                             <a href="{{ route('ParentDirectory.show', $prnts->id) }}" type="button" class="btn btn-secondary" style="font-size: 10px;">View</a>
                                             @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
-                                                <a href="{{ route('ParentDirectory.edit', $prnts->id) }}" type="button" class="btn btn-warning mx-1" style="font-size: 10px;">Edit</a>
-                                                <!-- button trigger for remove modal -->
-                                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $prnts->id }}" style="font-size: 10px;">
-                                                Remove
-                                                </button>
-                                                <!-- remove modal -->
-                                                <div class="modal fade" id="deleteModal{{ $prnts->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header bg-danger text-white">
-                                                                <h5 class="modal-title" id="exampleModalLabel">Remove Parent/Guardian Information?</h5>
-                                                                <button type="button" class="btn btn-link" data-bs-dismiss="modal" aria-label="Close">
-                                                                    <i class="fas fa-times text-white"></i>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <strong>Are you sure you want to remove the Parent/Guardian information? Please note that this action cannot be undone.</strong>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <form action="{{ route('parents.destroy', $prnts->id) }}" method="POST">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger">Remove</button>
-                                                                </form>
-                                                            </div>
+                                            <a href="{{ route('ParentDirectory.edit', $prnts->id) }}" type="button" class="btn btn-warning mx-1" style="font-size: 10px;">Edit</a>
+                                            @endif
+                                            <!-- button trigger for remove modal -->
+                                            @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant' && auth()->user()->role !='SuperAdmin')
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $prnts->id }}" style="font-size: 10px;">
+                                            Remove
+                                            </button>
+                                            <!-- remove modal -->
+                                            <div class="modal fade" id="deleteModal{{ $prnts->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-danger text-white">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Remove Parent/Guardian Information?</h5>
+                                                            <button type="button" class="btn btn-link" data-bs-dismiss="modal" aria-label="Close">
+                                                                <i class="fas fa-times text-white"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <strong>Are you sure you want to remove the Parent/Guardian information? Please note that this action cannot be undone.</strong>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <form action="{{ route('parents.destroy', $prnts->id) }}" method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-danger">Remove</button>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
                                             @endif
                                         </td>
                                     </tr>

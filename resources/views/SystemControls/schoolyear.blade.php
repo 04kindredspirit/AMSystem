@@ -107,6 +107,7 @@
                                                 </div>
                                             </div>
                                             <!-- Button trigger for remove modal -->
+                                            @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant' && auth()->user()->role !='SuperAdmin')
                                             <button type="button" class="btn btn-danger my-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $sy->id }}" style="font-size: 10px;">
                                                 Remove
                                             </button>
@@ -134,6 +135,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @endif
                                         </td>
                                         @endif
                                     </tr>

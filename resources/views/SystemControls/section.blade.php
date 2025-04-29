@@ -44,8 +44,9 @@
                     <table id="myTable" class="table table-striped table-hover" style="width:100%">
                         <thead class="table-primary text-center">
                             <tr>
-                                <th width="60%">Section</th>
+                                <th width="40%">Section</th>
                                 <th width="20%">Level</th>
+                                <th width="20%">Status</th>
                                 @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
                                 <th width="20%">Action</th>
                                 @endif
@@ -57,6 +58,7 @@
                                     <tr>
                                         <td>{{ $section->section_name ?? '' }}</td>
                                         <td>{{ $section->section_level ?? '' }}</td>
+                                        <td></td>
                                         @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
                                         <td class="text-center">
                                             <button type="button" class="btn btn-warning edit-btn my-1" data-bs-toggle="modal" data-bs-target="#editModal{{ $section->id }}" data-id="{{ $section->id }}" data-name="{{ $section->section_name }}" data-level="{{ $section->section_level }}" style="font-size: 10px;">
@@ -107,6 +109,7 @@
                                                 </div>
                                             </div>
                                             <!-- Button trigger for remove modal -->
+                                            @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant' && auth()->user()->role !='SuperAdmin')
                                             <button type="button" class="btn btn-danger my-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $section->id }}" style="font-size: 10px;">
                                                 Remove
                                             </button>
@@ -134,6 +137,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @endif
                                         </td>
                                         @endif
                                     </tr>
