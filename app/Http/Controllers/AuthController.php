@@ -20,7 +20,7 @@ class AuthController extends Controller
         return view('SystemControls.access-security', compact('user'));
     }
 
-    // teacher, accountant, admin registration logic
+    // registration logic
     public function registerSave(Request $request)
     {
         Log::info('Register Save Called', $request->all());

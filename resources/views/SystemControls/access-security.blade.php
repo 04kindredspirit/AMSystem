@@ -126,23 +126,23 @@
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                                    <input type="text" class="form-control form-control-user rounded" id="exampleRole" name="role" placeholder="Role" readonly required>
+                                                    <input type="text" class="form-control form-control-user rounded" id="exampleRole" name="role" value="{{ old('role') }}" placeholder="Role" readonly required>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                                    <input type="text" class="form-control form-control-user rounded" id="exampleFirstName" name="first_name" placeholder="First Name" required>
+                                                    <input type="text" class="form-control form-control-user rounded" id="exampleFirstName" name="first_name" value="{{ old('first_name') }}" placeholder="First Name" required>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <input type="text" class="form-control form-control-user rounded" id="exampleLastName" name="last_name" placeholder="Last Name" required>
+                                                    <input type="text" class="form-control form-control-user rounded" id="exampleLastName" name="last_name" value="{{ old('last_name') }}" placeholder="Last Name" required>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                                    <input type="email" class="form-control form-control-user rounded" id="exampleInputEmail" name="email" placeholder="Email Address" required>
+                                                    <input type="email" class="form-control form-control-user rounded" id="exampleInputEmail" name="email" value="{{ old('email') }}" placeholder="Email Address" required>
                                                 </div>
                                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                                    <input type="text" class="form-control form-control-user rounded" id="exampleInputNumber" name="phone_number" placeholder="Phone Number" required>
+                                                    <input type="text" class="form-control form-control-user rounded" id="exampleInputNumber" name="phone_number" value="{{ old('phone_number') }}" placeholder="Phone Number" required>
                                                 </div>
                                             </div>
                                             <div class="form-group row">

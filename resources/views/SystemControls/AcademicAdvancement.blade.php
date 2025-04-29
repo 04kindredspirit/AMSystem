@@ -2,7 +2,7 @@
 @include('Components.navbar')
 @section('title', 'Academic Advancement')
 <link href="{{ asset('admin_assets/vendor/font-awesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-<link href="{{ asset('codes-styles/academic-adv.css') }}" rel="stylesheet" href="style.css">
+<link href="{{ asset('codes-styles/academic-adv.css') }}" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('dataTable/css/dataTables.bootstrap5.css') }}">
 
 <script src="{{ asset('dataTable/js/jquery-3.7.1.js') }}"></script>
@@ -53,7 +53,7 @@
                 @endif
                 
                 <div class="table-responsive table-sm">
-                    <table id="AcademicAdvancement" class="table table-striped table-hover" style="width:100%">
+                    <table id="AcademicTable" class="table table-striped table-hover" style="width:100%">
                         <thead class="table-primary">
                             <tr>
                                 <th class="text-center" width="60%">Name</th>
@@ -61,22 +61,16 @@
                             </tr>
                         </thead>
                         <tbody class="text-center">
-                            @if($studentsWithZeroBalance->isEmpty())
-                                <tr>
-                                    <td colspan="2" class="text-center">No students with zero balance found.</td>
-                                </tr>
-                            @else
-                                @foreach ($studentsWithZeroBalance as $payment)
-                                    @if($payment->student)
-                                        <tr data-id="{{ $payment->student->id }}" 
-                                            data-name="{{ $payment->studentFullname }}" 
-                                            data-section="{{ $payment->student->studentSection ?? 'N/A' }}">
-                                            <td>{{ $payment->studentFullname }}</td>
-                                            <td>{{ $payment->student->studentSection ?? 'N/A' }}</td>
-                                        </tr>
-                                    @endif
-                                @endforeach
-                            @endif
+                            @foreach ($studentsWithZeroBalance as $payment)
+                                @if($payment->student)
+                                    <tr data-id="{{ $payment->student->id }}" 
+                                        data-name="{{ $payment->studentFullname }}" 
+                                        data-section="{{ $payment->student->studentSection ?? 'N/A' }}">
+                                        <td>{{ $payment->studentFullname }}</td>
+                                        <td>{{ $payment->student->studentSection ?? 'N/A' }}</td>
+                                    </tr>
+                                @endif
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -187,19 +181,30 @@
 
     <script src="{{ asset('admin_assets/js/bootstrap.bundle.min.js') }}"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
+            $('#AcademicTable').DataTable({
+                order: [],
+                layout: {
+                    bottomStart: "pageLength",
+                },
+                language: {
+                    emptyTable: "No students with zero balance found."
+                }
+            });
 
-            $('#myTable tbody tr').on('click', function () {
-
+            $('#AcademicTable tbody').on('click', 'tr', function() {
                 const id = $(this).data('id');
                 const name = $(this).data('name');
                 const section = $(this).data('section');
 
-                $('#section-modal .modal-body #student_id').val(id);
-                $('#section-modal .modal-body #student_name').val(name);
-                $('#section-modal .modal-body #from_section').val(section);
-
+                $('#student_id').val(id);
+                $('#student_name').val(name);
+                $('#from_section').val(section);
                 $('#section-modal').modal('show');
+            });
+
+            $('#section-modal').on('show.bs.modal', function() {
+                $(this).find('form')[0].reset();
             });
         });
     </script>

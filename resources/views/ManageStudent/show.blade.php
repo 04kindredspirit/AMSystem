@@ -271,17 +271,17 @@
                     "X-CSRF-TOKEN": "{{ csrf_token() }}",
                 },
             })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        document.getElementById("studentImage").src = data.imageUrl;
-                    } else {
-                        alert("Image upload failed!");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                });
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    document.getElementById("studentImage").src = data.imageUrl;
+                } else {
+                    alert("Image upload failed!");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
         });
     </script>
     @endif

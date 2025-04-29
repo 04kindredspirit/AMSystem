@@ -26,7 +26,7 @@ class SystemControlsController extends Controller
         // fetch students whose latest payment has a zero balance
         $studentsWithZeroBalance = Payment::whereIn('id', $latestPayments->pluck('latest_payment_id'))
             ->where('balance', 0)
-            ->with('student') // Ensure the 'student' relationship is loaded
+            ->with('student') // ensure the 'student' relationship is loaded
             ->get();
 
         // fetch active school years

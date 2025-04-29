@@ -188,7 +188,7 @@
             <li class="nav-item">
                 <x-sidebar href="{{ asset('manuals/AMSystem_UserManual.pdf') }}" :active="request()->routeIs('manuals')" class="download-link">
                     <i class="fas fa-info-circle text-primary"></i>
-                    <span>Manuals</span>
+                    <span>User Manual</span>
                 </x-sidebar>
             </li>
 

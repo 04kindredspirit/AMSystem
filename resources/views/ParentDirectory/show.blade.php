@@ -14,7 +14,7 @@
                     <div class="row g-0">
                         <!-- left column, image and upload -->
                         <div class="col-md-3 bg-secondary bg-danger rounded-left d-flex flex-column align-items-center justify-content-center py-3">
-                        <img src="{{ asset($parent->image ?? 'admin_assets/img/undraw_profile.svg') }}" id="parentImage" class="img-fluid rounded-start mb-2 p-3" style="width:200px; height:200px; object-fit:cover; border-radius: 50%; " alt="Profile Image">
+                        <img src="{{ asset($parent->image ?? 'admin_assets/img/undraw_profile.svg') }}" id="parentImage" class="img-fluid mb-2 p-3" style="width:200px; height:200px; object-fit:cover; border-radius: 50%; " alt="Profile Image">
                         @if(auth()->user()->role != 'Teacher' && auth()->user()->role != 'Accountant')
                             <input type="file" id="imageUpload" class="btn btn-primary w-75 w-md-100 btn-sm" accept="image/*">
                         @endif

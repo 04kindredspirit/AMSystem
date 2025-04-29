@@ -200,8 +200,6 @@
         </div>
     </div>
     <script src="{{ asset('admin_assets/js/bootstrap.bundle.min.js') }}"></script>
-	<script src="{{ asset('codes-js/profile.js') }}"></script>
-
 	<script>
 		function togglePasswordVisibility(inputId) {
 			const passwordInput = document.getElementById(inputId);

@@ -78,7 +78,7 @@
                             </div>
                             <div class="form-group text-center">
                                 <label>Payment Amount</label>
-                                <input type="text" class="form-control form-control-user rounded text-center" id="paymentAmount" name="paymentAmount" placeholder="Amount"required >
+                                <input type="text" class="form-control form-control-user rounded text-center" id="paymentAmount" name="paymentAmount" placeholder="Amount" required>
                             </div>
                             <div class="row form-group text-center">
                                 <div class="col-12 col-sm-6 col-md-6">
