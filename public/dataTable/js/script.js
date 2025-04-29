@@ -5,6 +5,13 @@ new DataTable("#myTable", {
     },
 });
 
+new DataTable("#AcademicAdvancement", {
+    order: [],
+    layout: {
+        bottomStart: "pageLength",
+    },
+});
+
 new DataTable("#expenseTable", {
     order: [],
     language: {

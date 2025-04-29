@@ -94,11 +94,11 @@ class PublicController extends Controller
 
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('uploads/parent_images'), $imageName);
+            $request->image->move(public_path('../../uploads/parent_images'), $imageName);
 
             // Save image path to database
             $parent = ParentList::find($request->parent_id);
-            $parent->image = 'uploads/parent_images/' . $imageName;
+            $parent->image = '../../uploads/parent_images/' . $imageName;
             $parent->save();
 
             return response()->json(['success' => true, 'imageUrl' => asset($parent->image)]);

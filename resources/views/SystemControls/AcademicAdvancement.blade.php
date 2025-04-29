@@ -53,7 +53,7 @@
                 @endif
                 
                 <div class="table-responsive table-sm">
-                    <table id="myTable" class="table table-striped table-hover" style="width:100%">
+                    <table id="AcademicAdvancement" class="table table-striped table-hover" style="width:100%">
                         <thead class="table-primary">
                             <tr>
                                 <th class="text-center" width="60%">Name</th>

@@ -20,12 +20,13 @@ class AuthController extends Controller
         return view('SystemControls.access-security', compact('user'));
     }
 
-    // registration logic
+    // teacher, accountant, admin registration logic
     public function registerSave(Request $request)
     {
         Log::info('Register Save Called', $request->all());
 
         $request->validate([
+            'role' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',

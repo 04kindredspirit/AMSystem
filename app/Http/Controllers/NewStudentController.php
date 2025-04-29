@@ -249,12 +249,12 @@ class NewStudentController extends Controller
 
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('uploads/student_images'), $imageName);
+            $request->image->move(public_path('../../uploads/student_images'), $imageName);
 
             // find student and update path
             $students = StudentList::findOrFail($request->student_id);
             if ($students) {
-                $students->image = 'uploads/student_images/' . $imageName;
+                $students->image = '../../uploads/student_images/' . $imageName;
                 $students->save();
 
                 return response()->json(['success' => true, 'imageUrl' => asset($students->image)]);

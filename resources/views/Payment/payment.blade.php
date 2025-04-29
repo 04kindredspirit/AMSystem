@@ -64,30 +64,30 @@
                                 <div class="col-12 col-sm-6 col-4">
                                     <div class="form-group text-center">
                                         <label>Receipt No.</label>
-                                        <input type="text" class="form-control form-control-user rounded text-center" id="paymentReceipt" name="paymentReceipt" placeholder="Sample OR No. 001" required>
+                                        <input type="text" class="form-control form-control-user rounded text-center" id="paymentReceipt" name="paymentReceipt" placeholder="OR No." required>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group text-center">
                                 <label>Student Name</label>
-                                <input type="text" class="form-control form-control-user rounded text-center" id="paymentFname" name="paymentFname" readOnly>
+                                <input type="text" class="form-control form-control-user rounded text-center" id="paymentFname" name="paymentFname" placeholder="Student's Full Name" required readOnly>
                             </div>
                             <div class="form-group text-center">
                                 <label>Student LRN</label>
-                                <input type="text" class="form-control form-control-user rounded text-center" id="paymentLrn" name="paymentLrn" readOnly>
+                                <input type="text" class="form-control form-control-user rounded text-center" id="paymentLrn" name="paymentLrn" placeholder="LRN" required readOnly>
                             </div>
                             <div class="form-group text-center">
                                 <label>Payment Amount</label>
-                                <input type="text" class="form-control form-control-user rounded text-center" id="paymentAmount" name="paymentAmount" placeholder="Amount">
+                                <input type="text" class="form-control form-control-user rounded text-center" id="paymentAmount" name="paymentAmount" placeholder="Amount"required >
                             </div>
                             <div class="row form-group text-center">
                                 <div class="col-12 col-sm-6 col-md-6">
                                     <label>Section</label>
-                                    <input type="text" class="form-control form-control-user rounded text-center" id="paymentDiscount" name="studentPayment_section" readOnly>
+                                    <input type="text" class="form-control form-control-user rounded text-center" id="paymentDiscount" name="studentPayment_section" placeholder="Section" required readOnly>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-6">
-                                    <label>Tuition Amount</label>
-                                    <input type="text" class="form-control form-control-user rounded text-center" id="tuitionAmount" name="tuitionAmount" readOnly>
+                                    <label>Balance Tuition</label>
+                                    <input type="text" class="form-control form-control-user rounded text-center" id="tuitionAmount" name="tuitionAmount" placeholder="Amount" required readOnly>
                                 </div>
                             </div>
                             <div class="form-group">

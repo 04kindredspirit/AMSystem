@@ -186,7 +186,7 @@
 
             <!-- Always show Manuals -->
             <li class="nav-item">
-                <x-sidebar href="{{ route('manuals') }}" :active="request()->routeIs('manuals')">
+                <x-sidebar href="{{ asset('manuals/AMSystem_UserManual.pdf') }}" :active="request()->routeIs('manuals')" class="download-link">
                     <i class="fas fa-info-circle text-primary"></i>
                     <span>Manuals</span>
                 </x-sidebar>
@@ -235,6 +235,25 @@
     <script src="{{ asset('admin_assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('admin_assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <script src="{{ asset('admin_assets/js/sb-admin-2.min.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const downloadLinks = document.querySelectorAll('.download-link');
+
+            downloadLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const fileUrl = link.getAttribute('href');
+                    const a = document.createElement('a');
+                    a.href = fileUrl;
+                    a.download = fileUrl.split('/').pop();
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                });
+            });
+        });
+    </script>
 
 </body>
 
