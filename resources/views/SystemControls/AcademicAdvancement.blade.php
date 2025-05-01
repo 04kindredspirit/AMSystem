@@ -95,16 +95,26 @@
                                             Student Information
                                         </div>
                                         <div class="card-body">
-                                            <div class="form-group">
-                                                <label>Student Name</label>
-                                                <input type="text" class="form-control form-control-user rounded" name="student_name" id="student_name" required readonly>
+                                            <div class="form-group row">
+                                                <div class="col-12 col-sm-6 col-md-6">
+                                                    <label>Student Name</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control form-control-user rounded" name="student_name" id="student_name" required readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-6 col-md-6">
+                                                    <label>OR No.</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control form-control-user rounded" name="academic_or" id="academic_or" placeholder="OR No." required>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col-12 col-sm-6 col-md-6">
                                                     <label><p></p></label>
                                                     <div class="input-group">
                                                         <label class="input-group-text">From Section</label>
-                                                        <input type="text" class="form-control form-control-user rounded-start-0" name="from_section" id="from_section" required readonly>
+                                                        <input type="text" class="form-control form-control-user rounded-start-0" name="from_section" id="from_section" value="{{ $payment->student->studentSection ?? 'N/A' }}" required readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-sm-6 col-md-6">
@@ -113,9 +123,9 @@
                                                         <label class="input-group-text">Transfer to</label>
                                                         <select class="form-select" name="transfer_to_section" id="inputGroupSelect02">
                                                             <option value="" disabled {{ old('student_section') == null ? 'selected' : '' }}>- Select Section -</option>
-                                                            @foreach($sectionData['data'] as $section)
-                                                                <option value="{{ $section->section_name }}" {{ old('student_section') == $section->section_name ? 'selected' : '' }}>
-                                                                    {{ $section->section_name }}
+                                                            @foreach($section as $sections)
+                                                                <option value="{{ $sections->section_name }}" {{ old('student_section') == $sections->section_name ? 'selected' : '' }}>
+                                                                    {{ $sections->section_name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -203,7 +213,7 @@
                 $('#section-modal').modal('show');
             });
 
-            $('#section-modal').on('show.bs.modal', function() {
+            $('#section-modal').on('hidden.bs.modal', function() {
                 $(this).find('form')[0].reset();
             });
         });

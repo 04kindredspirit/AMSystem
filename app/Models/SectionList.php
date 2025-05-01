@@ -12,5 +12,8 @@ class SectionList extends Model
     protected $fillable = [
         'sectionLevel',
         'sectionName',
+        'syStatus',
     ];
+
+    protected $table = 'section_lists';
 }

@@ -11,12 +11,15 @@ use App\Models\SectionList;
 use App\Models\SchoolYearList;
 use App\Models\Payment;
 use App\Models\StudentList;
+use App\Models\DiscountList;
 
 class SystemControlsController extends Controller
 {
     public function academicAdvancement()
     {
-        $sectionData['data'] = SectionList::orderBy('created_at', 'ASC')->select('id', 'section_name')->get();
+        $section = SectionList::where('status', 'Active')
+                                    ->orderBy('created_at', 'ASC')
+                                    ->get();
 
         // fetch the most recent payment record for each student
         $latestPayments = Payment::select('studentLrn', DB::raw('MAX(id) as latest_payment_id'))
@@ -31,11 +34,11 @@ class SystemControlsController extends Controller
 
         // fetch active school years
         $schoolyear = SchoolYearList::where('status', 'Active')
-            ->orderBy('created_at', 'ASC')
-            ->get();
+                                        ->orderBy('created_at', 'ASC')
+                                        ->get();
 
         return view('SystemControls.AcademicAdvancement', [
-            'sectionData' => $sectionData,
+            'section' => $section,
             'studentsWithZeroBalance' => $studentsWithZeroBalance,
             'schoolyear' => $schoolyear,
         ]);
@@ -45,6 +48,8 @@ class SystemControlsController extends Controller
     {
         $request->validate([
             'student_id' => 'required|exists:student_lists,id',
+            'student_name' => 'required|string',
+            'academic_or' => 'required|string|unique:payments, paymentOR',
             'from_section' => 'required|string',
             'transfer_to_section' => 'required|string',
             'school_year' => 'required|string',
@@ -86,10 +91,12 @@ class SystemControlsController extends Controller
         );
 
         Payment::create([
+            'user_id' => auth()->id(),
             'studentLrn' => $student->studentLRN,
             'studentPayment_section' => $request->from_section,
             'studentFullname' => $studentFullname,
             'paymentDate' => now(),
+            'paymentOR' => $request->academic_or,
             'paymentAmount' => 0,
             'paymentDiscountType' => $request->tuition_discount,
             'balance' => $discountedAmount,
@@ -208,11 +215,13 @@ class SystemControlsController extends Controller
         $request->validate([
             'sectionLevel' => 'required|string',
             'sectionName' => 'required|string',
+            'syStatus' => 'required|string',
         ]);
 
         $section = SectionList::findOrFail($id);
         $section->section_level = $request->sectionLevel;
         $section->section_name = $request->sectionName;
+        $section->status = $request->syStatus;
         $section->save();
 
         return redirect()->route('SystemControls.section')->with('success', 'Section updated successfully.');
@@ -271,5 +280,39 @@ class SystemControlsController extends Controller
         $schoolyear->delete();
 
         return redirect()->route('SystemControls.schoolyear')->with('success', 'School Year deleted successfully.');
+    }
+
+    // all discounts controller
+    public function discounts()
+    {
+        $discounts = DiscountList::orderBy('created_at', 'ASC')->get();
+        return view('SystemControls.discounts', compact('discounts'));
+    }
+
+    public function storeDiscount(Request $request)
+    {
+        $request->validate([
+            'discount_type' => 'required|string|max:255|unique:discount_lists,discount_type',
+            'percentage' => 'required|numeric|min:0|max:100',
+            'status' => 'required|in:Active,Inactive',
+        ]);
+
+        DiscountList::create($request->only(['discount_type', 'percentage', 'status']));
+
+        return redirect()->route('SystemControls.discounts')->with('success', 'Discount created successfully.');
+    }
+
+    public function updateDiscount(Request $request, $id)
+    {
+        $request->validate([
+            'discount_type' => 'required|string|max:255',
+            'percentage' => 'required|numeric|min:0|max:100',
+            'status' => 'required|in:Active,Inactive',
+        ]);
+
+        $discount = DiscountList::findOrFail($id);
+        $discount->update($request->only(['discount_type', 'percentage', 'status']));
+
+        return redirect()->route('SystemControls.discounts')->with('success', 'Discount updated successfully.');
     }
 }

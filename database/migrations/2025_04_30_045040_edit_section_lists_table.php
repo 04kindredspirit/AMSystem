@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('payment_records', function (Blueprint $table) {
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+        Schema::table('section_lists', function (Blueprint $table) {
+            $table->enum('status', ['Active','Inactive'])->default('Active')->nullable();
         });
     }
 
@@ -21,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('payment_records', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
+        Schema::table('section_lists', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 };

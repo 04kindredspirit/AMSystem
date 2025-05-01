@@ -132,16 +132,16 @@
             <!-- Show Access Security for non-teachers -->
             @if(auth()->user()->role != 'Teacher' && auth()->user()->role != 'Accountant')
             <li class="nav-item">
-                <a class="nav-link @if(request()->routeIs('SystemControls.access-security') || request()->routeIs('SystemControls.AcademicAdvancement') || request()->routeIs('SystemControls.section') || request()->routeIs('SystemControls.schoolyear')) show @else collapsed @endif"
+                <a class="nav-link @if(request()->routeIs('SystemControls.access-security') || request()->routeIs('SystemControls.AcademicAdvancement') || request()->routeIs('SystemControls.section') || request()->routeIs('SystemControls.schoolyear') || request()->routeIs('SystemControls.discounts')) show @else collapsed @endif"
                 href="#" 
                 data-toggle="collapse" 
                 data-target="#collapseFive"
-                aria-expanded="{{ request()->routeIs('SystemControls.access-security') || request()->routeIs('SystemControls.AcademicAdvancement') || request()->routeIs('SystemControls.section') || request()->routeIs('SystemControls.schoolyear') ? 'true' : 'false' }}"
+                aria-expanded="{{ request()->routeIs('SystemControls.access-security') || request()->routeIs('SystemControls.AcademicAdvancement') || request()->routeIs('SystemControls.section') || request()->routeIs('SystemControls.schoolyear') || request()->routeIs('SystemControls.discounts') ? 'true' : 'false' }}"
                 aria-controls="collapseFive">
                     <i class="fas fa-cogs text-primary"></i>
                     <span>System Controls</span>
                 </a>
-                <div id="collapseFive" class="collapse @if(request()->routeIs('SystemControls.access-security') || request()->routeIs('SystemControls.AcademicAdvancement') || request()->routeIs('SystemControls.section') || request()->routeIs('SystemControls.schoolyear')) show @endif"
+                <div id="collapseFive" class="collapse @if(request()->routeIs('SystemControls.access-security') || request()->routeIs('SystemControls.AcademicAdvancement') || request()->routeIs('SystemControls.section') || request()->routeIs('SystemControls.schoolyear') || request()->routeIs('SystemControls.discounts')) show @endif"
                     aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
@@ -156,6 +156,9 @@
                         </a>
                         <a class="collapse-item @if(request()->routeIs('SystemControls.schoolyear')) bg-gray-200 text-primary font-weight-bold @endif" href="{{ route('SystemControls.schoolyear') }}">
                             <i class="fas fa-calendar-alt mr-1 text-danger"></i> School Year
+                        </a>
+                        <a class="collapse-item @if(request()->routeIs('SystemControls.discounts')) bg-gray-200 text-primary font-weight-bold @endif" href="{{ route('SystemControls.discounts') }}">
+                            <i class="fas fa-tag mr-1 text-danger"></i> Discounts
                         </a>
                     </div>
                 </div>

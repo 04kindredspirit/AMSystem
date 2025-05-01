@@ -27,6 +27,7 @@ class StudentList extends Model
         'studentTuition_amount',
         'studentTuition_discount',
         'discountedTuition_amount',
+        'discountPercentage',
     ];
 
     public function payments()

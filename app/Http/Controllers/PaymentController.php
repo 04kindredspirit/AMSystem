@@ -55,7 +55,7 @@ class PaymentController
     {
         $request->validate([
             'paymentDate' => 'required|date',
-            'paymentReceipt' => 'required|string',
+            'paymentReceipt' => 'required|string|unique:payments, paymentOR',
             'paymentFname' => 'required|string',
             'paymentLrn' => 'required|string',
             'paymentAmount' => 'required|numeric',

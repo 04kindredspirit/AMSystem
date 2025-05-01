@@ -36,14 +36,12 @@
                                     <div class="col-4">
                                         <label for="studentSection">Section <span class="text-danger">*</span></label>
                                         <select class="form-control" name="studentSection" id="studentSection">
-                                            <option {{ old('studentSection', $students->studentSection) == null ? 'selected' : '' }}>- Select Section -</option>
-                                            <option value="Grade1" {{ old('studentSection', $students->studentSection) == 'Grade1' ? 'selected' : '' }}>Grade 1 Joy</option>
-                                            <option value="Grade2" {{ old('studentSection', $students->studentSection) == 'Grade2' ? 'selected' : '' }}>Grade 2 Peace</option>
-                                            <option value="Grade3" {{ old('studentSection', $students->studentSection) == 'Grade3' ? 'selected' : '' }}>Grade 3 Patience</option>
-                                            <option value="Grade4" {{ old('studentSection', $students->studentSection) == 'Grade4' ? 'selected' : '' }}>Grade 4 Kindness</option>
-                                            <option value="Grade5" {{ old('studentSection', $students->studentSection) == 'Grade5' ? 'selected' : '' }}>Grade 5 Goodness</option>
-                                            <option value="Grade6" {{ old('studentSection', $students->studentSection) == 'Grade6' ? 'selected' : '' }}>Grade 6 Greatness</option>
-                                            <option value="Kinder" {{ old('studentSection', $students->studentSection) == 'Kinder' ? 'selected' : '' }}>Kinder</option>
+                                            <option value="" disabled {{ old('studentSection', $students->studentSection) == null ? 'selected' : '' }}>- Select Section -</option>
+                                            @foreach($section as $sections)
+                                                <option value="{{ $sections->section_name }}" {{ old('studentSection', $students->studentSection) == $sections->section_name ? 'selected' : '' }}>
+                                                    {{ $sections->section_name }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -131,20 +129,35 @@
                         </div>
                         <div class="form-group p-3">
                             <div class="row">
-                                <div class="col-8">
+                                <div class="col-12 col-sm-6 col-md-4">
                                     <label for="studentTuition_amount">Tuition Amount <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-user rounded" name="studentTuition_amount" id="studentTuition_amount" value="{{ $students->studentTuition_amount }}">
+                                    <input type="number" step="0.01" class="form-control form-control-user rounded" name="studentTuition_amount" id="studentTuition_amount" value="{{ $students->discountedTuition_amount }}">
                                 </div>
-                                <div class="col-4">
+                                <div class="col-12 col-sm-6 col-md-4">
                                     <label for="studentTuition_discount">Discount</label>
                                     <select class="form-control" name="studentTuition_discount" id="studentTuition_discount">
-                                        <option selected>- Select Discount -</option>
-                                        <option value="Academic">Academic discounts</option>
-                                        <option value="Sibling">Sibling discounts</option>
-                                        <option value="Parent">Parent-alumnus discounts</option>
-                                        <option value="Early">Early payment discounts</option>
-                                        <option value="No Discount">No Discount</option>
+                                        <option value="" disabled {{ is_null($students->studentTuition_discount) ? 'selected' : ''}}>
+                                            - Select Discount -
+                                        </option>
+                                        @foreach($activeDiscounts as $discount)
+                                            <option value="{{ $discount->discount_type }}" 
+                                                    data-percentage="{{ $discount->percentage }}" 
+                                                    {{ $students->studentTuition_discount == $discount->discount_type ? 'selected' : '' }}>
+                                                {{ $discount->discount_type }} ({{ $discount->percentage }}%)
+                                            </option>
+                                        @endforeach
+                                        <option value="Custom Discount" {{ $students->studentTuition_discount == 'Custom Discount' ? 'selected' : '' }}>
+                                            Custom Discount
+                                        </option>
                                     </select>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label for="custom_discount">Discount Percentage</label>
+                                    <input type="number" class="form-control form-control-user rounded" 
+                                        name="custom_discount" id="custom_discount" 
+                                        value="{{ $students->studentTuition_discount == 'Custom Discount' ? $students->discountPercentage : '' }}"
+                                        placeholder="Enter percentage" 
+                                        {{ $students->studentTuition_discount != 'Custom Discount' ? 'disabled' : '' }}>
                                 </div>
                             </div>
                         </div>
@@ -157,7 +170,49 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('admin_assets/js/bootstrap.bundle.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            function initializeDiscountFields() {
+                const discountType = $('#studentTuition_discount').val();
+                const customDiscountInput = $('#custom_discount');
+
+                if (discountType === 'Custom Discount') {
+                    customDiscountInput.prop('disabled', false);
+                } else if (discountType && discountType !== 'No Discount') {
+                    const percentage = $('#studentTuition_discount option:selected').data('percentage');
+                    customDiscountInput.val(percentage);
+                    customDiscountInput.prop('disabled', true);
+                } else {
+                    customDiscountInput.val('');
+                    customDiscountInput.prop('disabled', true);
+                }
+            }
+
+            $('#studentTuition_discount').change(function() {
+                const selectedOption = $(this).find('option:selected');
+                const discountPercentage = selectedOption.data('percentage');
+                const customDiscountInput = $('#custom_discount');
+
+                if (selectedOption.val() === 'Custom Discount') {
+                    customDiscountInput.prop('disabled', false);
+                    customDiscountInput.val('');
+                    customDiscountInput.focus();
+                } else if (discountPercentage !== undefined) {
+                    customDiscountInput.val(discountPercentage);
+                    customDiscountInput.prop('disabled', true);
+                } else {
+                    customDiscountInput.val('');
+                    customDiscountInput.prop('disabled', true);
+                }
+            });
+
+            initializeDiscountFields();
+        });
+    </script>
+
 
 </body>
 </x-app>

@@ -65,7 +65,7 @@
                                     @if ($payments->isNotEmpty() && $displayBalance == 0)
                                         <span class="text-success">No balance (Ready for academic advancement)</span>
                                     @else
-                                        {{ number_format($displayBalance) }}
+                                        {{ number_format($displayBalance, 2, '.', ',') }}
                                     @endif
                                 </p>
                                 <p class="card-text" style="font-size: 14px;">

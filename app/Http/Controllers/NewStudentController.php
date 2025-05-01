@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\StudentList;
 use App\Models\SectionList;
 use App\Models\SchoolYearList;
+use App\Models\DiscountList;
 
 class NewStudentController extends Controller
 {
@@ -17,7 +18,10 @@ class NewStudentController extends Controller
      */
     public function index()
     {
-        $sectionData['data'] = SectionList::orderBy('created_at', 'ASC')->select('id', 'section_name')->get();
+        $section = SectionList::where('status', 'Active')
+                                    ->orderBy('created_at', 'ASC')
+                                    ->get();
+
         $students = StudentList::orderBy('created_at', 'DESC')->get(['id', 'studentLRN', 'studentFirst_name', 'studentMiddle_name', 'studentLast_name', 'studentName_ext', 'studentSection', 'image']) ?? collect();
 
         $linkedStudents = DB::table('student_links')
@@ -34,7 +38,11 @@ class NewStudentController extends Controller
                                     ->orderBy('created_at', 'ASC')
                                     ->get();
 
-        return view('ManageStudent/StudentDirectory', compact('students', 'groupedStudents', 'sectionData', 'schoolyear'));
+        $activeDiscounts = DiscountList::where('status', 'Active')
+                                    ->orderBy('discount_type')
+                                    ->get();
+
+        return view('ManageStudent/StudentDirectory', compact('students', 'groupedStudents', 'section', 'schoolyear', 'activeDiscounts'));
     }
 
     public function save(Request $request)
@@ -44,13 +52,14 @@ class NewStudentController extends Controller
             'link_to_student' => 'required|string',
             'studentLrn' => 'required|string|unique:student_lists,studentLRN',
             'studentSection' => 'required|string',
-            'school_year' => 'nullable|string',
+            'school_year' => 'required|string',
             'studentFname' => 'required|string',
             'studentLname' => 'required|string',
             'studentGender' => 'required|string',
             'studentBday' => 'required|date',
             'studentBo' => 'required|string',
             'studentAdd' => 'required|string',
+            'studentDisc' => 'nullable|string',
             'tuitionAmount' => 'required|numeric',
             'custom_discount' => 'nullable|numeric|min:0|max:100',
         ]);
@@ -78,32 +87,20 @@ class NewStudentController extends Controller
 
         $discountPercentage = 0;
 
-        if ($customDiscount !== null) {
+        if ($discountType === 'Custom Discount' && $customDiscount !== null) {
             $discountPercentage = $customDiscount;
-        } else {
-            switch ($discountType) {
-                case 'Academic Discount':
-                    $discountPercentage = 10;
-                    break;
-                case 'Sibling Discount':
-                    $discountPercentage = 7;
-                    break;
-                case 'Parent Discount':
-                    $discountPercentage = 7;
-                    break;
-                case 'Early Discount':
-                    $discountPercentage = 5;
-                    break;
-                default:
-                    $discountPercentage = 0;
-                    break;
-            }
+        } elseif ($discountType && $discountType !== 'No Discount') {
+            $discount = DiscountList::where('discount_type', $discountType)
+                                ->where('status', 'Active')
+                                ->first();
+            $discountPercentage = $discount ? $discount->percentage : 0;
         }
 
         $discountedAmount = $tuitionAmount - ($tuitionAmount * ($discountPercentage / 100));
 
-        $nstudent->studentTuition_amount = $request->tuitionAmount;
-        $nstudent->studentTuition_discount = $request->studentDisc;
+        $nstudent->studentTuition_amount = $tuitionAmount;
+        $nstudent->studentTuition_discount = $discountType;
+        $nstudent->discountPercentage = $discountPercentage;
         $nstudent->discountedTuition_amount = $discountedAmount;
 
         $nstudent->save();
@@ -192,8 +189,13 @@ class NewStudentController extends Controller
     public function edit($id)
     {
         $students = StudentList::findOrFail($id);
+        $activeDiscounts = DiscountList::where('status', 'Active')
+                                 ->orderBy('discount_type')
+                                 ->get();
 
-        return view('ManageStudent.edit', compact('students'));
+        $section = SectionList::all();
+
+        return view('ManageStudent.edit', compact('students', 'activeDiscounts', 'section'));
     }
 
     /**
@@ -201,25 +203,43 @@ class NewStudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // find the student record
-        $students = StudentList::findOrFail($id);
-        if (!$students) {
-            return redirect()->route('ManageStudent/StudentDirectory')->with('error', 'Student record not found.');
+        $student = StudentList::findOrFail($id);
+
+        $tuitionAmount = $request->studentTuition_amount;
+        $discountType = $request->studentTuition_discount;
+        $customDiscount = $request->custom_discount;
+
+        // discount calculation
+        $discountPercentage = 0;
+        if ($customDiscount !== null && $discountType === 'Custom Discount') {
+            $discountPercentage = $customDiscount;
+        } elseif ($discountType && $discountType !== 'No Discount') {
+            $discount = DiscountList::where('discount_type', $discountType)
+                                ->where('status', 'Active')
+                                ->first();
+            $discountPercentage = $discount ? $discount->percentage : 0;
         }
 
-        // update the student details
-        $students->update([
+        $discountedAmount = $tuitionAmount - ($tuitionAmount * ($discountPercentage / 100));
+
+        // update student infos
+        $student->update([
             'studentLRN' => $request->studentLRN,
+            'studentSection' => $request->studentSection,
             'studentName_ext' => $request->studentName_ext,
             'studentFirst_name' => $request->studentFirst_name,
             'studentMiddle_name' => $request->studentMiddle_name,
             'studentLast_name' => $request->studentLast_name,
             'studentGender' => $request->studentGender,
             'studentBirthdate' => $request->studentBirthdate,
+            'studentBirthorder' => $request->studentBirthorder,
             'studentAddress' => $request->studentAddress,
             'studentHobby' => $request->studentHobby,
             'studentFavorite' => $request->studentFavorite,
-            'studentTuition_amount' => $request->studentTuition_amount,
+            'studentTuition_amount' => $tuitionAmount,
+            'discountedTuition_amount' => $discountedAmount,
+            'studentTuition_discount' => $discountType,
+            'discountPercentage' => $discountPercentage,
         ]);
 
         return redirect()->route('ManageStudent/StudentDirectory')->with('success', 'Student record updated successfully.');

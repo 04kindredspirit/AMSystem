@@ -47,9 +47,7 @@
                                 <th width="40%">Section</th>
                                 <th width="20%">Level</th>
                                 <th width="20%">Status</th>
-                                @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
                                 <th width="20%">Action</th>
-                                @endif
                             </tr>
                         </thead>
                         <tbody class="text-center">
@@ -58,11 +56,12 @@
                                     <tr>
                                         <td>{{ $section->section_name ?? '' }}</td>
                                         <td>{{ $section->section_level ?? '' }}</td>
-                                        <td></td>
-                                        @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-warning edit-btn my-1" data-bs-toggle="modal" data-bs-target="#editModal{{ $section->id }}" data-id="{{ $section->id }}" data-name="{{ $section->section_name }}" data-level="{{ $section->section_level }}" style="font-size: 10px;">
-                                                Edit
+                                            <span id="status-badge-{{ $section->id }}" class="badge {{ $section->status == 'Active' ? 'bg-success' : 'bg-danger' }} text-white">{{ $section->status }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-warning edit-btn my-1" data-bs-toggle="modal" data-bs-target="#editModal{{ $section->id }}" style="font-size: 12px;">
+                                            <i class="fas fa-edit"></i> Edit
                                             </button>
                                             <div class="modal fade" id="editModal{{ $section->id }}" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
                                                 <div class="modal-dialog modal-xl">
@@ -82,19 +81,27 @@
                                                                     </div>
                                                                     <div class="card-body">
                                                                         <div class="form-group row">
-                                                                            <div class="col-12 col-sm-6 col-md-4">
+                                                                            <div class="col-12 col-sm-6 col-md-4 text-start">
                                                                                 <label for="sectionLevel">Level</label>
                                                                                 <select class="form-control" name="sectionLevel" id="sectionLevel{{ $section->id }}" required>
-                                                                                    <option value="" disabled selected>- Select Level -</option>
-                                                                                    <option value="Pre Kinder">Pre Kinder</option>
-                                                                                    <option value="Kinder">Kinder</option>
-                                                                                    <option value="Level 1-3">1-3</option>
-                                                                                    <option value="Level 4-6">4-6</option>
+                                                                                    <option disabled {{ is_null($section->section_level) ? 'selected' : '' }}>- Select Level -</option>
+                                                                                    <option value="Pre Kinder" {{ $section->section_level == 'Pre Kinder' ? 'selected' : '' }}>Pre Kinder</option>
+                                                                                    <option value="Kinder" {{ $section->section_level == 'Kinder' ? 'selected' : '' }}>Kinder</option>
+                                                                                    <option value="Level 1-3" {{ $section->section_level == 'Level 1-3' ? 'selected' : '' }}>1-3</option>
+                                                                                    <option value="Level 4-6" {{ $section->section_level == 'Level 4-6' ? 'selected' : '' }}>4-6</option>
                                                                                 </select>
                                                                             </div>
-                                                                            <div class="col-12 col-sm-6 col-md-8">
+                                                                            <div class="col-12 col-sm-6 col-md-4 text-start">
                                                                                 <label for="sectionName">Section Name</label>
                                                                                 <input type="text" class="form-control form-control-user rounded" name="sectionName" id="sectionName{{ $section->id }}" value="{{ $section->section_name }}" required>
+                                                                            </div>
+                                                                            <div class="col-12 col-sm-6 col-md-4 text-start">
+                                                                                <label for="syStatus">Status</label>
+                                                                                <select class="form-control" name="syStatus" id="syStatus{{ $section->status }}" required>
+                                                                                    <option disabled {{ is_null($section->status) ? 'selected' : '' }}>- Select Status -</option>
+                                                                                    <option value="Active" {{ $section->status == 'Active' ? 'selected' : '' }}>Active</option>
+                                                                                    <option value="Inactive" {{ $section->status == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+                                                                                </select>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer d-flex justify-content-center">
@@ -109,7 +116,7 @@
                                                 </div>
                                             </div>
                                             <!-- Button trigger for remove modal -->
-                                            @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant' && auth()->user()->role !='SuperAdmin')
+                                            @if(auth()->user()->role !='SuperAdmin')
                                             <button type="button" class="btn btn-danger my-1" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $section->id }}" style="font-size: 10px;">
                                                 Remove
                                             </button>
@@ -139,7 +146,6 @@
                                             </div>
                                             @endif
                                         </td>
-                                        @endif
                                     </tr>
                                 @endforeach
                             @endif
@@ -147,6 +153,7 @@
                     </table>
                 </div>
 
+                <!-- section modal -->
                 <div class="modal fade" id="section-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content">
@@ -174,9 +181,17 @@
                                                         <option value="Level 4-6">4-6</option>
                                                     </select>
                                                 </div>
-                                                <div class="col-12 col-sm-6 col-md-8">
+                                                <div class="col-12 col-sm-6 col-md-4">
                                                     <label for="sectionName">Section Name</label>
                                                     <input type="text" class="form-control form-control-user rounded" name="sectionName" id="sectionName" required>
+                                                </div>
+                                                <div class="col-12 col-sm-6 col-md-4">
+                                                    <label for="syStatus">Status</label>
+                                                    <select class="form-control" name="syStatus" id="syStatus" required>
+                                                        <option value="" disabled selected>- Select Status -</option>
+                                                        <option value="Active">Active</option>
+                                                        <option value="Inactive">Inactive</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="modal-footer d-flex justify-content-center">
@@ -196,7 +211,7 @@
 
     <script src="{{ asset('admin_assets/js/bootstrap.bundle.min.js') }}"></script>
 
-    <script>
+    <!-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             const editButtons = document.querySelectorAll('.edit-btn');
 
@@ -211,7 +226,7 @@
                 });
             });
         });
-    </script>
+    </script> -->
     
 </body>
 </x-app>

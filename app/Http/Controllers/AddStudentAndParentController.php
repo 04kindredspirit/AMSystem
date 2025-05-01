@@ -8,6 +8,7 @@ use App\Models\ParentList;
 use App\Models\StudentList;
 use App\Models\SectionList;
 use App\Models\SchoolYearList;
+use App\Models\DiscountList;
 
 class AddStudentAndParentController extends Controller
 {
@@ -16,15 +17,22 @@ class AddStudentAndParentController extends Controller
      */
     public function index()
     {
-        $sectionData['data'] = SectionList::orderBy('created_at', 'ASC')->select('id', 'section_name')->get();
+        $section = SectionList::where('status', 'Active')
+                                    ->orderBy('created_at', 'ASC')
+                                    ->get();
 
         $schoolyear = SchoolYearList::where('status', 'Active')
                                     ->orderBy('created_at', 'ASC')
                                     ->get();
+        
+        $activeDiscounts = DiscountList::where('status', 'Active')
+                                    ->orderBy('discount_type')
+                                    ->get();
 
         return view('ManageStudent/addstudent', [
-            'sectionData' => $sectionData,
+            'section' => $section,
             'schoolyear' => $schoolyear,
+            'activeDiscounts' => $activeDiscounts,
         ]);
     }
 

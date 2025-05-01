@@ -64,10 +64,12 @@
                                         <td>{{ $student->studentFirst_name ?? '' }} {{ $student->studentMiddle_name ?? '' }} {{ $student->studentLast_name ?? '' }} {{ $student->studentName_ext ?? '' }}</td>
                                         <td>{{ $student->studentSection ?? '' }}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('ManageStudent.show', $student->id) }}" type="button" class="btn btn-secondary" style="font-size: 10px;">View</a>
-                                            @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
-                                                <a href="{{ route('ManageStudent.edit', $student->id) }}" type="button" class="btn btn-warning my-1" style="font-size: 10px;">Edit</a>
+                                            <a href="{{ route('ManageStudent.show', $student->id) }}" type="button" class="btn btn-secondary" style="font-size: 12px;"><i class="fas fa-eye"></i> View</a>
+                                                @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
+                                                <a href="{{ route('ManageStudent.edit', $student->id) }}" type="button" class="btn btn-warning my-1" style="font-size: 12px;"><i class="fas fa-edit"></i> Edit</a>
+                                                @endif
                                                 <!-- button t o trigger modal -->
+                                                @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant' && auth()->user()->role !='SuperAdmin')
                                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $student->id }}" style="font-size: 10px;">
                                                 Remove
                                                 </button>
@@ -109,7 +111,7 @@
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modal-title">Add New Parent</h5>
+                                <h5 class="modal-title" id="modal-title">Add New Student</h5>
                                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                                 </button>
@@ -186,9 +188,9 @@
                                                         <label for="section">Section <span class="text-danger">*</span></label>
                                                         <select class="form-control" name="studentSection" required>
                                                             <option value="" disabled {{ old('studentSection') == null ? 'selected' : '' }}>- Select Section -</option>
-                                                            @foreach($sectionData['data'] as $section)
-                                                                <option value="{{ $section->section_name }}" {{ old('studentSection') == $section->section_name ? 'selected' : '' }}>
-                                                                    {{ $section->section_name }}
+                                                            @foreach($section as $sections)
+                                                                <option value="{{ $sections->section_name }}" {{ old('studentSection') == $sections->section_name ? 'selected' : '' }}>
+                                                                    {{ $sections->section_name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -291,19 +293,31 @@
                                                     <label>Tuition Amount <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control form-control-user rounded" name="tuitionAmount" value="{{ old('tuitionAmount') }}" placeholder="Amount" required>
                                                 </div>
+
                                                 <div class="col-12 col-sm-6 col-md-4">
                                                     <label for="discount">Discount</label>
-                                                    <select class="form-control" name="studentDisc">
-                                                        <option value="" disabled {{ old('studentDisc') == null ? 'selected' : '' }}>- Select Discount -</option>
-                                                        <option value="Academic Discount" {{ old('studentDisc') == 'Academic Discount' ? 'selected' : '' }}>Academic discounts</option>
-                                                        <option value="Sibling Discount" {{ old('studentDisc') == 'Sibling Discount' ? 'selected' : '' }}>Sibling discounts</option>
-                                                        <option value="Parent Discount" {{ old('studentDisc') == 'Parent Discount' ? 'selected' : '' }}>Parent-alumnus discounts</option>
-                                                        <option value="Early Discount" {{ old('studentDisc') == 'Early Discount' ? 'selected' : '' }}>Early payment discounts</option>
+                                                    <select class="form-control" name="studentDisc" id="discountSelect">
+                                                        <option value="" disabled {{ empty(old('studentDisc')) ? 'selected' : '' }}>- Select Discount -</option>
+                                                        @foreach($activeDiscounts as $discount)
+                                                            <option value="{{ $discount->discount_type }}" 
+                                                                    data-percentage="{{ $discount->percentage }}" 
+                                                                    {{ old('studentDisc') === $discount->discount_type ? 'selected' : '' }}>
+                                                                {{ $discount->discount_type }} ({{ $discount->percentage }}%)
+                                                            </option>
+                                                        @endforeach
+                                                        <option value="Custom Discount" {{ old('studentDisc') === 'Custom Discount' ? 'selected' : '' }}>
+                                                            Custom Discount
+                                                        </option>
                                                     </select>
                                                 </div>
+
                                                 <div class="col-12 col-sm-6 col-md-4">
-                                                    <label for="custom_discount">Custom Discount Percentage (Optional)</label>
-                                                    <input type="number" class="form-control form-control-user rounded" name="custom_discount" id="custom_discount" value="{{ old('custom_discount') }}" placeholder="Enter custom discount percentage">
+                                                    <label for="custom_discount">Discount Percentage</label>
+                                                    <input type="number" class="form-control form-control-user rounded" 
+                                                        name="custom_discount" id="custom_discount" 
+                                                        value="{{ old('custom_discount') }}"
+                                                        placeholder="Enter percentage" 
+                                                        disabled>
                                                 </div>
                                             </div>
                                         </div>
@@ -320,8 +334,83 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('admin_assets/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('codes-js/student-directory.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dropdown = document.getElementById("linkToStudent");
+            if (dropdown) {
+                dropdown.addEventListener("change", function () {
+                    // console.log("Dropdown changed!");
+
+                    var selectedStudentId = this.value;
+                    fetch("/update-linked-students", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        },
+                        body: JSON.stringify({ student_id: selectedStudentId }),
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            dropdown.innerHTML = "<option>- Select Student -</option>";
+
+                            data.linkedStudents.forEach((student) => {
+                                const option = document.createElement("option");
+                                option.value = student.id;
+                                option.text = `${student.studentFirst_name} ${student.studentLast_name}`;
+                                dropdown.appendChild(option);
+                            });
+                        })
+                        .catch((error) => console.error("Error:", error));
+                });
+            } else {
+                console.error("Dropdown element not found!");
+            }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+
+            function updateCustomDiscountField() {
+                const discountSelect = $('#discountSelect');
+                const customDiscount = $('#custom_discount');
+                const selectedValue = ($.trim(discountSelect.val()) || '').toLowerCase();
+
+                if (selectedValue === 'custom discount') {
+                    customDiscount.prop('disabled', false);
+                    customDiscount.val('');  // Clear on selection
+                    customDiscount.focus();
+                } else {
+                    const selectedOption = discountSelect.find('option:selected');
+                    const percentage = selectedOption.data('percentage');
+
+                    customDiscount.val(percentage || '');
+                    customDiscount.prop('disabled', true);
+                }
+            }
+
+            // On page load
+            updateCustomDiscountField();
+
+            // On dropdown change
+            $('#discountSelect').change(function() {
+                updateCustomDiscountField();
+            });
+
+            // Restrict custom discount input to 0–100
+            $('#custom_discount').on('input', function() {
+                let value = parseFloat($(this).val());
+                if (value > 100) {
+                    $(this).val(100);
+                } else if (value < 0) {
+                    $(this).val(0);
+                }
+            });
+        });
+    </script>
 
 </body>
 </x-app>

@@ -70,9 +70,9 @@
                                         <span id="status-badge-{{ $usr->id }}" class="badge {{ $usr->status == 'Active' ? 'bg-success' : 'bg-danger' }} text-white">{{ $usr->status }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('SystemControls.show', $usr->id) }}" type="button" class="btn btn-secondary" style="font-size: 10px;">View</a>
+                                        <a href="{{ route('SystemControls.show', $usr->id) }}" type="button" class="btn btn-secondary" style="font-size: 12px;"><i class="fas fa-eye"></i> View</a>
                                         @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
-                                            <a href="{{ route('SystemControls.edit', $usr->id) }}" type="button" class="btn btn-warning my-1" style="font-size: 10px;">Edit</a>
+                                            <a href="{{ route('SystemControls.edit', $usr->id) }}" type="button" class="btn btn-warning my-1" style="font-size: 12px;"><i class="fas fa-edit"></i> Edit</a>
                                         @endif
                                     </td>
                                 </tr>

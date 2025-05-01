@@ -61,8 +61,8 @@
                                         </td>
                                         @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-warning edit-btn my-1" data-bs-toggle="modal" data-bs-target="#editModal{{ $sy->id }}" data-id="{{ $sy->id }}" data-name="{{ $sy->school_year }}" data-level="{{ $sy->status }}" style="font-size: 10px;">
-                                                Edit
+                                            <button type="button" class="btn btn-sm btn-warning edit-btn my-1" data-bs-toggle="modal" data-bs-target="#editModal{{ $sy->id }}" data-id="{{ $sy->id }}" data-name="{{ $sy->school_year }}" data-level="{{ $sy->status }}" style="font-size: 12px;">
+                                                <i class="fas fa-edit"></i> Edit
                                             </button>
                                             <div class="modal fade" id="editModal{{ $sy->id }}" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
                                                 <div class="modal-dialog modal-xl">
@@ -82,16 +82,16 @@
                                                                     </div>
                                                                     <div class="card-body">
                                                                         <div class="form-group row">
-                                                                            <div class="col-12 col-sm-6 col-md-4">
+                                                                            <div class="col-12 col-sm-6 col-md-4 text-start">
                                                                                 <label for="schoolYear">School Year</label>
                                                                                 <input type="text" class="form-control form-control-user rounded" name="schoolYear" id="schoolYear{{ $sy->id }}" value="{{ $sy->school_year }}" required>
                                                                             </div>
-                                                                            <div class="col-12 col-sm-6 col-md-8">
-                                                                                <label for="syStatus">Section Name</label>
+                                                                            <div class="col-12 col-sm-6 col-md-8 text-start">
+                                                                                <label for="syStatus">Status</label>
                                                                                 <select class="form-control" name="syStatus" id="syStatus{{ $sy->status }}" required>
-                                                                                    <option value="" disabled selected>- Select Status -</option>
-                                                                                    <option value="Active">Active</option>
-                                                                                    <option value="Inactive">Inactive</option>
+                                                                                    <option disabled {{ is_null($sy->status) ? 'selected' : '' }}>- Select Status -</option>
+                                                                                    <option value="Active" {{ $sy->status == 'Active' ? 'selected' : '' }}>Active</option>
+                                                                                    <option value="Inactive" {{ $sy->status == 'Inactive' ? 'selected' : '' }}>Inactive</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
@@ -167,7 +167,7 @@
                                                     <input type="text" class="form-control form-control-user rounded" name="schoolYear" id="schoolYear" required>
                                                 </div>
                                                 <div class="col-12 col-sm-6 col-md-8">
-                                                    <label for="syStatus">Section Name</label>
+                                                    <label for="syStatus">Status</label>
                                                     <select class="form-control" name="syStatus" id="syStatus" required>
                                                         <option value="" disabled selected>- Select Status -</option>
                                                         <option value="Active">Active</option>

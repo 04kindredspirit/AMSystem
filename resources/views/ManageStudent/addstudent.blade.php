@@ -158,9 +158,9 @@
                                         <label>Section <span class="text-danger">*</span></label>
                                         <select class="form-control" name="student_section" required>
                                             <option value="" disabled {{ old('student_section') == null ? 'selected' : '' }}>- Select Section -</option>
-                                            @foreach($sectionData['data'] as $section)
-                                                <option value="{{ $section->section_name }}" {{ old('student_section') == $section->section_name ? 'selected' : '' }}>
-                                                    {{ $section->section_name }}
+                                            @foreach($section as $sections)
+                                                <option value="{{ $sections->section_name }}" {{ old('student_section') == $sections->section_name ? 'selected' : '' }}>
+                                                    {{ $sections->section_name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -170,7 +170,6 @@
                                         <select class="form-control" name="school_year" required>
                                             <option value="" disabled {{ old('school_year') == null ? 'selected' : '' }}>- Select School Year -</option>
                                             @foreach($schoolyear as $sy)
-                                                <!-- Debug the school year -->
                                                 <option value="{{ $sy->school_year }}" {{ old('school_year') == $sy->school_year ? 'selected' : '' }}>
                                                     {{ $sy->school_year }}
                                                 </option>
@@ -271,17 +270,28 @@
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-4">
                                         <label for="discount">Discount</label>
-                                        <select class="form-control" name="tuition_discount" id="discount">
-                                            <option value="" disabled {{ old('tuition_discount') == null ? 'selected' : '' }}>- Select Discount -</option>
-                                            <option value="Academic Discount" {{ old('tuition_discount') == 'Academic Discount' ? 'selected' : '' }}>Academic discounts</option>
-                                            <option value="Sibling Discount" {{ old('tuition_discount') == 'Sibling Discount' ? 'selected' : '' }}>Sibling discounts</option>
-                                            <option value="Parent Discount" {{ old('tuition_discount') == 'Parent Discount' ? 'selected' : '' }}>Parent-alumnus discounts</option>
-                                            <option value="Early Discount" {{ old('tuition_discount') == 'Early Discount' ? 'selected' : '' }}>Early payment discounts</option>
+                                        <select class="form-control" name="studentDisc" id="discountSelect">
+                                            <option value="" disabled {{ empty(old('studentDisc')) ? 'selected' : '' }}>- Select Discount -</option>
+                                            @foreach($activeDiscounts as $discount)
+                                                <option value="{{ $discount->discount_type }}" 
+                                                        data-percentage="{{ $discount->percentage }}" 
+                                                        {{ old('studentDisc') === $discount->discount_type ? 'selected' : '' }}>
+                                                    {{ $discount->discount_type }} ({{ $discount->percentage }}%)
+                                                </option>
+                                            @endforeach
+                                            <option value="Custom Discount" {{ old('studentDisc') === 'Custom Discount' ? 'selected' : '' }}>
+                                                Custom Discount
+                                            </option>
                                         </select>
                                     </div>
+
                                     <div class="col-12 col-sm-6 col-md-4">
-                                        <label for="custom_discount">Custom Discount Percentage (Optional)</label>
-                                        <input type="number" class="form-control form-control-user rounded" name="custom_discount" id="custom_discount" value="{{ old('custom_discount') }}" placeholder="Enter custom discount percentage">
+                                        <label for="custom_discount">Discount Percentage</label>
+                                        <input type="number" class="form-control form-control-user rounded" 
+                                            name="custom_discount" id="custom_discount" 
+                                            value="{{ old('custom_discount') }}"
+                                            placeholder="Enter percentage" 
+                                            disabled>
                                     </div>
                                 </div>
                             </div>
@@ -296,5 +306,47 @@
     </div>
 
     <script src="{{ asset('admin_assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            function updateCustomDiscountField() {
+                const discountSelect = $('#discountSelect');
+                const customDiscount = $('#custom_discount');
+                const selectedValue = ($.trim(discountSelect.val()) || '').toLowerCase();
+
+                if (selectedValue === 'custom discount') {
+                    customDiscount.prop('disabled', false);
+                    customDiscount.val('');  // Clear on selection
+                    customDiscount.focus();
+                } else {
+                    const selectedOption = discountSelect.find('option:selected');
+                    const percentage = selectedOption.data('percentage');
+
+                    customDiscount.val(percentage || '');
+                    customDiscount.prop('disabled', true);
+                }
+            }
+
+            // On page load
+            updateCustomDiscountField();
+
+            // On dropdown change
+            $('#discountSelect').change(function() {
+                updateCustomDiscountField();
+            });
+
+            // Restrict custom discount input to 0–100
+            $('#custom_discount').on('input', function() {
+                let value = parseFloat($(this).val());
+                if (value > 100) {
+                    $(this).val(100);
+                } else if (value < 0) {
+                    $(this).val(0);
+                }
+            });
+        });
+    </script>
+
 </body>
 </x-app>

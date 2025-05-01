@@ -94,6 +94,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/AcademicAdvancement', 'academicAdvancement')->name('SystemControls.AcademicAdvancement');
         Route::get('/section', 'addSection')->name('SystemControls.section');
         Route::get('/schoolyear', 'schoolYear')->name('SystemControls.schoolyear');
+        Route::get('/discounts', 'discounts')->name('SystemControls.discounts');
 
         Route::post('/section/create', 'createSection')->name('SystemControls.createSection');
         Route::put('/section/{id}/update', 'updateSection')->name('SystemControls.updateSection');
@@ -102,6 +103,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/schoolyear/create', 'createSY')->name('SystemControls.createSY');
         Route::put('/schoolyear/{id}/update', 'updateSY')->name('SystemControls.updateSY');
         Route::delete('/schoolyear/{id}/delete', 'deleteSY')->name('SystemControls.deleteSY');
+
+        Route::post('/discounts/store', 'storeDiscount')->name('SystemControls.discounts.store');
+        Route::put('/discounts/{id}/update', 'updateDiscount')->name('SystemControls.discounts.update');
 
         Route::post('/academic-advancement/update', 'updateAcademicAdvancement')->name('academic.advancement.update');
         

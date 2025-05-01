@@ -65,9 +65,9 @@
                                         <td style="font-size: 13px;">{{ $prnts->parentOccupation ?? '' }}</td>
                                         <td style="font-size: 13px;">{{ $prnts->parentAddress ?? '' }}</td>
                                         <td class="text-center d-flex justify-content-between">
-                                            <a href="{{ route('ParentDirectory.show', $prnts->id) }}" type="button" class="btn btn-secondary" style="font-size: 10px;">View</a>
+                                            <a href="{{ route('ParentDirectory.show', $prnts->id) }}" type="button" class="btn btn-secondary" style="font-size: 12px;"><i class="fas fa-eye"></i> View</a>
                                             @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
-                                            <a href="{{ route('ParentDirectory.edit', $prnts->id) }}" type="button" class="btn btn-warning mx-1" style="font-size: 10px;">Edit</a>
+                                            <a href="{{ route('ParentDirectory.edit', $prnts->id) }}" type="button" class="btn btn-warning mx-1" style="font-size: 12px;"><i class="fas fa-edit"></i> Edit</a>
                                             @endif
                                             <!-- button trigger for remove modal -->
                                             @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant' && auth()->user()->role !='SuperAdmin')
