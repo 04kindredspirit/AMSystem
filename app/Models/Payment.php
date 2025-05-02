@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\Traits\LogsActivity;
 
 class Payment extends Model
 {
+    use LogsActivity;
     use HasFactory;
+
+    protected static $logName = 'a Payment';
 
     protected $table = 'payment_records'; 
 
@@ -18,11 +22,14 @@ class Payment extends Model
         'studentFullname',
         'studentPayment_section',
         'studentLrn',
+        'balance',
         'paymentAmount',
+        'paymentDiscountType',
         'paymentTuitionAmount',
         'paymentPeriod',
-        'balance',
         'record_type',
+        'MOP',
+        'ReferenceNo',
         'user_id',
     ];
 

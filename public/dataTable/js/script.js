@@ -65,6 +65,7 @@ new DataTable("#expenseTable", {
 });
 
 new DataTable("#paymentTable", {
+    scrollX: true,
     order: [],
     language: {
         searchBuilder: {

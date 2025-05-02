@@ -10,6 +10,7 @@ use App\Models\StudentList;
 use App\Models\SectionList;
 use App\Models\SchoolYearList;
 use App\Models\DiscountList;
+use App\Models\Payment;
 
 class NewStudentController extends Controller
 {
@@ -241,6 +242,16 @@ class NewStudentController extends Controller
             'studentTuition_discount' => $discountType,
             'discountPercentage' => $discountPercentage,
         ]);
+
+        $payment = Payment::where('studentLrn', $student->studentLRN)->first();
+        if ($payment) {
+            $payment->update(['balance' => $discountedAmount]);
+        } else {
+            Payment::create([
+                'studentLrn' => $student->studentLRN,
+                'balance' => $discountedAmount
+            ]);
+        }
 
         return redirect()->route('ManageStudent/StudentDirectory')->with('success', 'Student record updated successfully.');
     }

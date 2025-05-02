@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivity;
 
 class StudentList extends Model
 {
+    use LogsActivity;
     use HasFactory;
+
+    protected static $logName = 'a Student List';
 
     protected $fillable = [
         'image',

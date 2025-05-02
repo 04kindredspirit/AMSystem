@@ -131,7 +131,7 @@
                             <div class="row">
                                 <div class="col-12 col-sm-6 col-md-4">
                                     <label for="studentTuition_amount">Tuition Amount <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" class="form-control form-control-user rounded" name="studentTuition_amount" id="studentTuition_amount" value="{{ $students->discountedTuition_amount }}">
+                                    <input type="number" step="0.01" class="form-control form-control-user rounded" name="studentTuition_amount" id="studentTuition_amount" value="{{ $students->studentTuition_amount }}">
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-4">
                                     <label for="studentTuition_discount">Discount</label>

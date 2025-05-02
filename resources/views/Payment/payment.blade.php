@@ -37,7 +37,7 @@
                                     </button>
                                 </div>
                             @endif
-                            <label class="ml-3">Enter Sudent LRN, First Name or Last Name</label>
+                            <label class="ml-3">Enter Student LRN, First Name or Last Name</label>
                             <div class="input-group mb-3 col-12 col-sm-6 col-md-4">
                                 <input type="text" class="form-control text-center" id="search_query" placeholder="Search Student" aria-label="searchText" aria-describedby="basic-addon1">
                                 <div class="input-group-prepend">
@@ -76,9 +76,44 @@
                                 <label>Student LRN</label>
                                 <input type="text" class="form-control form-control-user rounded text-center" id="paymentLrn" name="paymentLrn" placeholder="LRN" required readOnly>
                             </div>
-                            <div class="form-group text-center">
-                                <label>Payment Amount</label>
-                                <input type="text" class="form-control form-control-user rounded text-center" id="paymentAmount" name="paymentAmount" placeholder="Amount" required>
+                            <div class="row d-flex justify-content-between">
+                                <div class="col-12 col-sm-4 col-4">
+                                    <div class="form-group text-center">
+                                        <label for="">Mode of Payment</label>
+                                    </div>
+                                    <div class="d-flex flex-column flex-lg-row justify-content-center">
+                                        <div class="form-check mb-2 mb-lg-0 me-lg-3">
+                                            <input class="form-check-input" type="radio" name="paymentMode" id="paymentCash" value="Cash" checked>
+                                            <label class="form-check-label" for="paymentCash">
+                                                Cash
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2 mb-lg-0 me-lg-3">
+                                            <input class="form-check-input" type="radio" name="paymentMode" id="paymentGCash" value="GCash">
+                                            <label class="form-check-label" for="paymentGCash">
+                                                GCash
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="paymentMode" id="paymentCheque" value="Cheque">
+                                            <label class="form-check-label" for="paymentCheque">
+                                                Cheque
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-4 col-4">
+                                    <div class="form-group text-center">
+                                        <label>Payment Amount</label>
+                                        <input type="number" class="form-control form-control-user rounded text-center" id="paymentAmount" name="paymentAmount" placeholder="Amount" required step="0.01">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-4 col-4">
+                                    <div class="form-group text-center">
+                                        <label for="">Reference No.</label>
+                                        <input type="text" class="form-control form-control-user rounded text-center" id="paymentReference" name="paymentReference" placeholder="Reference No." disabled>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row form-group text-center">
                                 <div class="col-12 col-sm-6 col-md-6">
@@ -97,6 +132,7 @@
                                     <option value="2nd Period">2nd Period</option>
                                     <option value="3rd Period">3rd Period</option>
                                     <option value="4th Period">4th Period</option>
+                                    <option value="Monthly">Monthly</option>
                                     <option value="Remaining Balance">Remaining Balance</option>
                                 </select>
                             </div>
@@ -118,8 +154,30 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- payment validation -->
-    <script src="{{ asset('codes-js/payment-period-validation.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const paymentModeRadios = document.querySelectorAll('input[name="paymentMode"]');
+            const referenceInput = document.getElementById('paymentReference');
+
+            function toggleReferenceInput() {
+                const selectedMode = document.querySelector('input[name="paymentMode"]:checked').value;
+                if (selectedMode === 'GCash' || selectedMode === 'Cheque') {
+                    referenceInput.disabled = false;
+                    referenceInput.required = true;
+                } else {
+                    referenceInput.disabled = true;
+                    referenceInput.required = false;
+                    referenceInput.value = '';
+                }
+            }
+
+            toggleReferenceInput();
+
+            paymentModeRadios.forEach(function (radio) {
+                radio.addEventListener('change', toggleReferenceInput);
+            });
+        });
+    </script>
 
     <!-- payment period validation -->
     <script>
@@ -156,7 +214,7 @@
                 const studentLrn = paymentLrnInput.value;
 
                 // skip validation for remaining balance
-                if (selectedPeriod === "Remaining Balance") {
+                if (selectedPeriod === "Remaining Balance" || selectedPeriod === "Monthly") {
                     clearError();
                     return;
                 }
@@ -200,7 +258,7 @@
                     return;
                 }
 
-                if (selectedPeriod === "Remaining Balance") {
+                if (selectedPeriod === "Remaining Balance" || selectedPeriod === "Monthly") {
                     clearError();
                     return;
                 }

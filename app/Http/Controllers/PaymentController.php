@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
 use App\Models\Payment;
 use App\Models\StudentList;
 
@@ -53,16 +55,31 @@ class PaymentController
      */
     public function save(Request $request)
     {
-        $request->validate([
+        // Always validate these fields
+        $validatedData = $request->validate([
             'paymentDate' => 'required|date',
-            'paymentReceipt' => 'required|string|unique:payments, paymentOR',
+            'paymentReceipt' => 'required|string|unique:payment_records,paymentOR',
             'paymentFname' => 'required|string',
             'paymentLrn' => 'required|string',
             'paymentAmount' => 'required|numeric',
             'studentPayment_section' => 'required|string',
             'tuitionAmount' => 'required|numeric',
             'paymentPeriod' => 'required|string',
+            'paymentMode' => 'required|string',
         ]);
+
+        // Conditionally validate paymentReference (ONLY if GCash or Cheque)
+        if (in_array($request->paymentMode, ['GCash', 'Cheque'])) {
+            $request->validate([
+                'paymentReference' => [
+                    'required',
+                    'string',
+                    Rule::unique('payment_records', 'ReferenceNo'),
+                ],
+            ]);
+        }
+
+        // No need to check unique manually anymore; Laravel validation handles it above
 
         $student = StudentList::where('studentLRN', $request->paymentLrn)->first();
 
@@ -70,10 +87,9 @@ class PaymentController
             return redirect()->back()->with('error', 'Student not found.');
         }
 
-        // skip validation for remaining balance
-        if ($request->paymentPeriod !== 'Remaining Balance') {
+        if ($request->paymentPeriod !== 'Remaining Balance' && $request->paymentPeriod !== 'Monthly') {
             $existingPayment = Payment::where('studentLrn', $request->paymentLrn)
-                ->where('studentPayment_section', $student->studentSection) // scope to current grade level
+                ->where('studentPayment_section', $student->studentSection)
                 ->where('paymentPeriod', $request->paymentPeriod)
                 ->first();
 
@@ -82,25 +98,22 @@ class PaymentController
             }
         }
 
-        $paymentAmount = $request->paymentAmount;
-        $tuitionAmount = $request->tuitionAmount;
-
-        if ($paymentAmount > $tuitionAmount) {
-            return redirect()->back()->with('error', 'Payment amount cannot exceed the tuition amount.');
-        }
-
+        $paymentAmount = (float)$request->paymentAmount;
+        $tuitionAmount = (float)$request->tuitionAmount;
         $balance = $tuitionAmount - $paymentAmount;
 
         $payment = new Payment();
         $payment->paymentDate = $request->paymentDate;
         $payment->paymentOR = $request->paymentReceipt;
-        $payment->studentFullname = $request->paymentFname; 
+        $payment->studentFullname = $request->paymentFname;
         $payment->studentLrn = $request->paymentLrn;
         $payment->paymentAmount = $request->paymentAmount;
         $payment->studentPayment_section = $request->studentPayment_section;
         $payment->paymentTuitionAmount = $request->tuitionAmount;
         $payment->paymentPeriod = $request->paymentPeriod;
         $payment->balance = $balance;
+        $payment->MOP = $request->paymentMode;
+        $payment->ReferenceNo = $request->paymentReference; // Can be null, no problem
         $payment->user_id = auth()->id();
         $payment->save();
 

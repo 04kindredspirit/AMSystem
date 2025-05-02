@@ -96,18 +96,18 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="form-group row">
-                                                <div class="col-12 col-sm-6 col-md-6">
+                                                <div class="col-12 col-sm-6 col-md-12">
                                                     <label>Student Name</label>
                                                     <div class="input-group">
                                                         <input type="text" class="form-control form-control-user rounded" name="student_name" id="student_name" required readonly>
                                                     </div>
                                                 </div>
-                                                <div class="col-12 col-sm-6 col-md-6">
+                                                <!-- <div class="col-12 col-sm-6 col-md-6">
                                                     <label>OR No.</label>
                                                     <div class="input-group">
                                                         <input type="text" class="form-control form-control-user rounded" name="academic_or" id="academic_or" placeholder="OR No." required>
                                                     </div>
-                                                </div>
+                                                </div> -->
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col-12 col-sm-6 col-md-6">
@@ -147,26 +147,34 @@
                                         <div class="card-header bg-danger text-white text-center">
                                             Tuition Fee Information
                                         </div>
-                                        <div class="form-group p-3">
-                                            <div class="row">
-                                                <div class="col-4">
-                                                    <label>Tuition Amount <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control form-control-user rounded" name="tuition_amount" value="{{ old('tuition_amount') }}" placeholder="Amount" required>
-                                                </div>
-                                                <div class="col-4">
-                                                    <label for="discount">Discount</label>
-                                                    <select class="form-control" name="tuition_discount" id="discount">
-                                                        <option value="" disabled {{ old('tuition_discount') == null ? 'selected' : '' }}>- Select Discount -</option>
-                                                        <option value="Academic Discount" {{ old('tuition_discount') == 'Academic Discount' ? 'selected' : '' }}>Academic discounts</option>
-                                                        <option value="Sibling Discount" {{ old('tuition_discount') == 'Sibling Discount' ? 'selected' : '' }}>Sibling discounts</option>
-                                                        <option value="Parent Discount" {{ old('tuition_discount') == 'Parent Discount' ? 'selected' : '' }}>Parent-alumnus discounts</option>
-                                                        <option value="Early Discount" {{ old('tuition_discount') == 'Early Discount' ? 'selected' : '' }}>Early payment discounts</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-4">
-                                                    <label for="custom_discount">Custom Discount Percentage (Optional)</label>
-                                                    <input type="number" class="form-control form-control-user rounded" name="custom_discount" id="custom_discount" value="{{ old('custom_discount') }}" placeholder="Enter custom discount percentage">
-                                                </div>
+                                        <div class="form-group row p-3">
+                                            <div class="col-12 col-sm-6 col-md-4">
+                                                <label>Tuition Amount <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control form-control-user rounded" name="tuition_amount" value="{{ old('tuition_amount') }}" placeholder="Amount" required>
+                                            </div>
+                                            <div class="col-12 col-sm-6 col-md-4">
+                                                <label for="discount">Discount</label>
+                                                <select class="form-control" name="studentDisc" id="discountSelect">
+                                                    <option value="" disabled {{ empty(old('studentDisc')) ? 'selected' : '' }}>- Select Discount -</option>
+                                                    @foreach($activeDiscounts as $discount)
+                                                        <option value="{{ $discount->discount_type }}" 
+                                                                data-percentage="{{ $discount->percentage }}" 
+                                                                {{ old('studentDisc') === $discount->discount_type ? 'selected' : '' }}>
+                                                            {{ $discount->discount_type }} ({{ $discount->percentage }}%)
+                                                        </option>
+                                                    @endforeach
+                                                    <option value="Custom Discount" {{ old('studentDisc') === 'Custom Discount' ? 'selected' : '' }}>
+                                                        Custom Discount
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-sm-6 col-md-4">
+                                                <label for="custom_discount">Discount Percentage</label>
+                                                <input type="number" class="form-control form-control-user rounded" 
+                                                    name="custom_discount" id="custom_discount" 
+                                                    value="{{ old('custom_discount') }}"
+                                                    placeholder="Enter percentage" 
+                                                    disabled>
                                             </div>
                                         </div>
                                         <div class="modal-footer d-flex justify-content-center">
@@ -188,7 +196,7 @@
             </div>
         </div>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('admin_assets/js/bootstrap.bundle.min.js') }}"></script>
     <script>
         $(document).ready(function() {
@@ -217,6 +225,49 @@
                 $(this).find('form')[0].reset();
             });
         });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+    // Initialize discount fields
+    function initializeDiscountFields() {
+        const discountType = $('#discountSelect').val();
+        const customDiscountInput = $('#custom_discount');
+
+        if (discountType === 'Custom Discount') {
+            customDiscountInput.prop('disabled', false);
+        } else if (discountType && discountType !== 'No Discount') {
+            const percentage = $('#discountSelect option:selected').data('percentage');
+            customDiscountInput.val(percentage);
+            customDiscountInput.prop('disabled', true);
+        } else {
+            customDiscountInput.val('');
+            customDiscountInput.prop('disabled', true);
+        }
+    }
+
+    // Handle discount selection change
+    $('#discountSelect').change(function() {
+        const selectedOption = $(this).find('option:selected');
+        const discountPercentage = selectedOption.data('percentage');
+        const customDiscountInput = $('#custom_discount');
+
+        if (selectedOption.val() === 'Custom Discount') {
+            customDiscountInput.prop('disabled', false);
+            customDiscountInput.val('');
+            customDiscountInput.focus();
+        } else if (discountPercentage !== undefined) {
+            customDiscountInput.val(discountPercentage);
+            customDiscountInput.prop('disabled', true);
+        } else {
+            customDiscountInput.val('');
+            customDiscountInput.prop('disabled', true);
+        }
+    });
+
+    // Initialize on page load
+    initializeDiscountFields();
+});
     </script>
 
 </body>

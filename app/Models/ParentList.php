@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivity;
 
 class ParentList extends Model
 {
+    use LogsActivity;
     use HasFactory;
+
+    protected static $logName = 'a Parent List';
 
     protected $fillable = [
         'parentRelationship_to_student',

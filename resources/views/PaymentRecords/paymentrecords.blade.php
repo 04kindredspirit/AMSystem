@@ -50,7 +50,7 @@
                         </button>
                     </div>
                 @endif
-                <div class="table-responsive table-sm">
+                <div class="table-responsive">
                     <table id="paymentTable" class="table table-striped table-hover" style="width:100%">
                         <thead class="table-primary"  style="font-size: 12px">
                             <tr>
@@ -62,6 +62,8 @@
                                 <th class="text-center">Amount Paid</th>
                                 <th class="text-center">Payment Period</th>
                                 <th class="text-center">Type</th>
+                                <th class="text-center">MOP</th>
+                                <th class="text-center">Reference No.</th>
                                 <th class="text-center">Transact By</th>
 
                             </tr>
@@ -79,11 +81,13 @@
                                     <td class="text-center">{{ $pymnt->paymentPeriod ?? '' }}</td>
                                     <td class="text-center">
                                         @if($pymnt->record_type === 'balance_adjustment')
-                                            Balance Adjustment
+                                            Academic Advancement
                                         @else
                                             Payment
                                         @endif
                                     </td>
+                                    <td>{{ $pymnt->MOP ?? '' }}</td>
+                                    <td>{{ $pymnt->ReferenceNo ?? '' }}</td>
                                     <td class="text-center">{{ $pymnt->user ? $pymnt->user->first_name . ' ' . $pymnt->user->last_name : 'N/A' }}</td>
                                 </tr>
                                 @endforeach

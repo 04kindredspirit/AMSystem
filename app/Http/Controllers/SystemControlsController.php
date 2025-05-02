@@ -37,74 +37,86 @@ class SystemControlsController extends Controller
                                         ->orderBy('created_at', 'ASC')
                                         ->get();
 
+        $activeDiscounts = DiscountList::where('status', 'Active')
+                                    ->orderBy('discount_type')
+                                    ->get();
+
         return view('SystemControls.AcademicAdvancement', [
             'section' => $section,
             'studentsWithZeroBalance' => $studentsWithZeroBalance,
             'schoolyear' => $schoolyear,
+            'activeDiscounts' => $activeDiscounts,
         ]);
     }
 
     public function updateAcademicAdvancement(Request $request)
-    {
-        $request->validate([
-            'student_id' => 'required|exists:student_lists,id',
-            'student_name' => 'required|string',
-            'academic_or' => 'required|string|unique:payments, paymentOR',
-            'from_section' => 'required|string',
-            'transfer_to_section' => 'required|string',
-            'school_year' => 'required|string',
-            'tuition_amount' => 'required|numeric',
-            'tuition_discount' => 'required|string',
-            'custom_discount' => 'nullable|numeric|min:0|max:100',
-        ]);
+{
+    $request->validate([
+        'student_id' => 'required|exists:student_lists,id',
+        'student_name' => 'required|string',
+        'from_section' => 'required|string',
+        'transfer_to_section' => 'required|string',
+        'school_year' => 'required|string',
+        'tuition_amount' => 'required|numeric',
+        'studentDisc' => 'nullable|string', // Changed from tuition_discount to match your form field name
+        'custom_discount' => 'nullable|numeric|min:0|max:100',
+    ]);
 
-        $student = StudentList::findOrFail($request->student_id);
+    $student = StudentList::findOrFail($request->student_id);
 
-        // update details
-        $student->studentSection = $request->transfer_to_section;
-        $student->school_year = $request->school_year;
-        $student->studentTuition_amount = $request->tuition_amount;
-        $student->studentTuition_discount = $request->tuition_discount;
+    // Get the discount type from the form (using studentDisc instead of tuition_discount)
+    $discountType = $request->studentDisc;
+    $customDiscount = $request->custom_discount;
+    $tuitionAmount = $request->tuition_amount;
 
-        // calculation of discount
-        $discountPercentage = $request->custom_discount ?? 0;
-        if ($request->tuition_discount === 'Academic Discount') {
-            $discountPercentage = 10;
-        } elseif ($request->tuition_discount === 'Sibling Discount') {
-            $discountPercentage = 7;
-        } elseif ($request->tuition_discount === 'Parent Discount') {
-            $discountPercentage = 7;
-        } elseif ($request->tuition_discount === 'Early Discount') {
-            $discountPercentage = 5;
-        }
-            $discountedAmount = $request->tuition_amount - ($request->tuition_amount * ($discountPercentage / 100));
-            $student->discountedTuition_amount = $discountedAmount;
+    // Calculate discount percentage
+    $discountPercentage = 0;
 
-            $student->save();
-
-            // create new record for balance adjustment
-            $studentFullname = trim(
-            $student->studentFirst_name . ' ' .
-            $student->studentMiddle_name . ' ' .
-            $student->studentLast_name . ' ' .
-            $student->studentName_ext
-        );
-
-        Payment::create([
-            'user_id' => auth()->id(),
-            'studentLrn' => $student->studentLRN,
-            'studentPayment_section' => $request->from_section,
-            'studentFullname' => $studentFullname,
-            'paymentDate' => now(),
-            'paymentOR' => $request->academic_or,
-            'paymentAmount' => 0,
-            'paymentDiscountType' => $request->tuition_discount,
-            'balance' => $discountedAmount,
-            'record_type' => 'balance_adjustment',
-        ]);
-
-        return redirect()->route('SystemControls.AcademicAdvancement')->with('success', 'Student advanced successfully!');
+    if ($discountType === 'Custom Discount' && $customDiscount !== null) {
+        $discountPercentage = $customDiscount;
+    } elseif ($discountType && $discountType !== 'No Discount') {
+        $discount = DiscountList::where('discount_type', $discountType)
+                                ->where('status', 'Active')
+                                ->first();
+        $discountPercentage = $discount ? $discount->percentage : 0;
     }
+
+    // Calculate discounted amount
+    $discountedAmount = $tuitionAmount - ($tuitionAmount * ($discountPercentage / 100));
+
+    // Update student information
+    $student->update([
+        'studentSection' => $request->transfer_to_section,
+        'school_year' => $request->school_year,
+        'studentTuition_amount' => $tuitionAmount,
+        'studentTuition_discount' => $discountType,
+        'discountPercentage' => $discountPercentage,
+        'discountedTuition_amount' => $discountedAmount,
+    ]);
+
+    // Create payment record for balance adjustment
+    $studentFullname = trim(
+        $student->studentFirst_name . ' ' .
+        $student->studentMiddle_name . ' ' .
+        $student->studentLast_name . ' ' .
+        $student->studentName_ext
+    );
+
+    Payment::create([
+        'user_id' => auth()->id(),
+        'studentLrn' => $student->studentLRN,
+        'studentPayment_section' => $request->from_section,
+        'studentFullname' => $studentFullname,
+        'paymentDate' => now(),
+        'paymentOR' => $request->academic_or,
+        'paymentAmount' => 0,
+        'paymentDiscountType' => $discountType,
+        'balance' => $discountedAmount,
+        'record_type' => 'balance_adjustment',
+    ]);
+
+    return redirect()->route('SystemControls.AcademicAdvancement')->with('success', 'Student advanced successfully!');
+}
 
     // all access-security controller
     public function show(string $id)

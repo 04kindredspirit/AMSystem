@@ -171,7 +171,7 @@
                                             <td>{{ $payment->studentPayment_section ?? '' }}</td>
                                             <td>
                                                 @if($payment->record_type === 'balance_adjustment')
-                                                    Balance Reset
+                                                    Academic Advancement
                                                 @else
                                                     Payment
                                                 @endif
@@ -285,13 +285,13 @@
         });
     </script>
     @endif
-    <script>
+    <!-- <script>
         $(document).ready(function () {
             $('#myTable tbody tr').on('click', function () {
                 $('#section-modal').modal('show');
             });
         });
-    </script>
+    </script> -->
     
 
 </body>

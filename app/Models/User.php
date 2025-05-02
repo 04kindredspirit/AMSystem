@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Traits\LogsActivity;
 
 class User extends Authenticatable implements CanResetPassword
 {
     use HasFactory, Notifiable, HasRoles;
+
+    protected static $logName = 'a User Profile';
 
     /**
      * The attributes that are mass assignable.

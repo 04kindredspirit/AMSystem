@@ -287,38 +287,36 @@
                                         <div class="card-header bg-danger text-white text-center">
                                                 Tuition Fee Information
                                         </div>
-                                        <div class="form-group p-3">
-                                            <div class="row">
-                                                <div class="col-12 col-sm-6 col-md-4">
-                                                    <label>Tuition Amount <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control form-control-user rounded" name="tuitionAmount" value="{{ old('tuitionAmount') }}" placeholder="Amount" required>
-                                                </div>
+                                        <div class="form-group row p-3">
+                                            <div class="col-12 col-sm-6 col-md-4">
+                                                <label>Tuition Amount <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control form-control-user rounded" name="tuitionAmount" value="{{ old('tuitionAmount') }}" placeholder="Amount" required>
+                                            </div>
 
-                                                <div class="col-12 col-sm-6 col-md-4">
-                                                    <label for="discount">Discount</label>
-                                                    <select class="form-control" name="studentDisc" id="discountSelect">
-                                                        <option value="" disabled {{ empty(old('studentDisc')) ? 'selected' : '' }}>- Select Discount -</option>
-                                                        @foreach($activeDiscounts as $discount)
-                                                            <option value="{{ $discount->discount_type }}" 
-                                                                    data-percentage="{{ $discount->percentage }}" 
-                                                                    {{ old('studentDisc') === $discount->discount_type ? 'selected' : '' }}>
-                                                                {{ $discount->discount_type }} ({{ $discount->percentage }}%)
-                                                            </option>
-                                                        @endforeach
-                                                        <option value="Custom Discount" {{ old('studentDisc') === 'Custom Discount' ? 'selected' : '' }}>
-                                                            Custom Discount
+                                            <div class="col-12 col-sm-6 col-md-4">
+                                                <label for="discount">Discount</label>
+                                                <select class="form-control" name="studentDisc" id="discountSelect">
+                                                    <option value="" disabled {{ empty(old('studentDisc')) ? 'selected' : '' }}>- Select Discount -</option>
+                                                    @foreach($activeDiscounts as $discount)
+                                                        <option value="{{ $discount->discount_type }}" 
+                                                                data-percentage="{{ $discount->percentage }}" 
+                                                                {{ old('studentDisc') === $discount->discount_type ? 'selected' : '' }}>
+                                                            {{ $discount->discount_type }} ({{ $discount->percentage }}%)
                                                         </option>
-                                                    </select>
-                                                </div>
+                                                    @endforeach
+                                                    <option value="Custom Discount" {{ old('studentDisc') === 'Custom Discount' ? 'selected' : '' }}>
+                                                        Custom Discount
+                                                    </option>
+                                                </select>
+                                            </div>
 
-                                                <div class="col-12 col-sm-6 col-md-4">
-                                                    <label for="custom_discount">Discount Percentage</label>
-                                                    <input type="number" class="form-control form-control-user rounded" 
-                                                        name="custom_discount" id="custom_discount" 
-                                                        value="{{ old('custom_discount') }}"
-                                                        placeholder="Enter percentage" 
-                                                        disabled>
-                                                </div>
+                                            <div class="col-12 col-sm-6 col-md-4">
+                                                <label for="custom_discount">Discount Percentage</label>
+                                                <input type="number" class="form-control form-control-user rounded" 
+                                                    name="custom_discount" id="custom_discount" 
+                                                    value="{{ old('custom_discount') }}"
+                                                    placeholder="Enter percentage" 
+                                                    disabled>
                                             </div>
                                         </div>
                                         <div class="modal-footer d-flex justify-content-center">

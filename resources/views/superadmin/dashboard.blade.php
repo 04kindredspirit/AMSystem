@@ -1,6 +1,45 @@
 <x-app>
 @include('Components.navbar')
 @section('title', 'Superadmin Dashboard')
+<style>
+    .col-xl-5ths {
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+
+    @media (min-width: 1200px) {
+        .col-xl-5ths {
+            flex: 0 0 20%;
+            max-width: 20%;
+        }
+    }
+
+    @media (max-width: 1199.98px) and (min-width: 768px) {
+        .col-xl-5ths {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .col-xl-5ths {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+
+    .table-wrapper {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .table thead th {
+        position: sticky;
+        top: 0;
+        background-color: #cfe2ff; /* Same as table-primary */
+        z-index: 1;
+    }
+</style>
 <body class="bg-gradient-light text-dark">
     <div id="wrapper">
         <div id="content-wrapper" class="d-flex flex-column">
@@ -90,9 +129,30 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        @foreach($expenseBalances as $category => $balance)
+                        <div class="col-xl-5ths col-md-6 mb-4">
+                            <!-- Fixed the unclosed parenthesis in the border-left class -->
+                            <div class="card border-left-{{ $balance['percentage'] < 10 ? 'danger' : ($balance['percentage'] < 30 ? 'warning' : 'success') }} shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                {{ $category }}
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                ₱ {{ number_format($balance['remaining'], 2) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
 
                     <!-- line area chart -->
-                    <div class="col-xl-12 col-lg-7">
+                    <div class="col-xl-12 col-lg-12 col-md-12">
                         <div class="card shadow mb-4">
                             <div
                                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -104,11 +164,47 @@
                                 </div>
                             </div>
                         </div>
-                    </div>  
+                    </div> 
+                    
+                    <div class="card o-hidden border-0 shadow-lg mb-4">
+                        <div class="card-body p4">
+                            <div class="d-flex align-items-center">
+                                <h3 class="mb-0">Activity Logs</h3>
+                            </div>
+                            <hr class="boder-danger">
+
+                            <div class="table-wrapper">
+                                <table id="myTable" class="table table-striped table-hover" style="width:100%">
+                                    <thead class="table-primary text-center">
+                                        <tr>
+                                            <th width="20%">User</th>
+                                            <th width="60%">Activity</th>
+                                            <th width="20%">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+                                        @forelse ($logs as $log)
+                                            <tr>
+                                                <td>{{ $log->user->first_name. ' ' . $log->user->last_name ?? 'Unknown User' }}</td>
+                                                <td>{{ $log->activity }}</td>
+                                                <td>{{ $log->created_at->format('Y-m-d H:i:s') }}</td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="3">No activity logs found.</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    
 
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>

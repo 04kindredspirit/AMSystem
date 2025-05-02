@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivity;
 
 class NewStudentList extends Model
 {
     use HasFactory;
+    use LogsActivity;
+
+    protected static $logName = 'a Student List';
 
     protected $fillable = [
         'image',
@@ -27,5 +31,6 @@ class NewStudentList extends Model
         'studentTuition_amount',
         'studentTuition_discount',
         'discountedTuition_amount',
+        'discountPercentage',
     ];
 }

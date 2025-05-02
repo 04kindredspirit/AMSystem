@@ -44,39 +44,68 @@ class ManageBudgetController extends Controller
     }
 
     public function expense() {
-        $currentDate = now();
-        $lastMonthDate = now()->subMonth();
-    
-        $expenses = Expense::with('expenseType')
-            ->whereBetween('date', [$lastMonthDate, $currentDate])
-            ->orderBy('date', 'DESC')
-            ->get();
-    
-        $totalAllocations = Allocation::sum('amount');
-        $totalReplenishments = CategoryAllocation::sum('amount');
-    
-        $groupedExpenses = $expenses->groupBy('expense_type_id')->map(function ($expenses) {
-            $allocated = $expenses->first()->expenseType->categoryAllocations->sum('amount');
-            $spent = $expenses->sum('amount');
+        $expenseTypes = ExpenseType::all();
+        
+        $groupedExpenses = collect();
+        
+        foreach ($expenseTypes as $expenseType) {
+            $currentMonth = now()->format('Y-m');
+
+            $latestExpenses = Expense::with('expenseType')
+                ->where('expense_type_id', $expenseType->id)
+                ->whereRaw("DATE_FORMAT(date, '%Y-%m') = ?", [$currentMonth])
+                ->orderBy('date', 'DESC')
+                ->take(15)
+                ->get();
+            
+            $allocated = CategoryAllocation::where('expense_type_id', $expenseType->id)->sum('amount');
+            $spent = Expense::where('expense_type_id', $expenseType->id)->sum('amount');
             $remainingBalance = $allocated - $spent;
-    
-            return [
-                'name' => $expenses->first()->expenseType->name,
-                'data' => $expenses->map(function ($expense) {
+            $totalAllocated = $allocated;
+            
+            $groupedExpenses->put($expenseType->name, [
+                'name' => $expenseType->name,
+                'data' => $latestExpenses->map(function ($expense) {
                     return [
                         'description' => $expense->description,
                         'amount' => $expense->amount,
+                        'date' => $expense->date
                     ];
                 }),
                 'remainingBalance' => $remainingBalance,
-            ];
-        });
+                'totalAllocated' => $totalAllocated
+            ]);
+        }
     
-        $utilities = $groupedExpenses->firstWhere('name', 'Utilities') ?? ['data' => [], 'remainingBalance' => 0];
-        $salaries = $groupedExpenses->firstWhere('name', 'Salaries') ?? ['data' => [], 'remainingBalance' => 0];
-        $pettyCash = $groupedExpenses->firstWhere('name', 'Petty Cash') ?? ['data' => [], 'remainingBalance' => 0];
-        $maintenance = $groupedExpenses->firstWhere('name', 'Maintenance') ?? ['data' => [], 'remainingBalance' => 0];
-        $supplies = $groupedExpenses->firstWhere('name', 'Supplies') ?? ['data' => [], 'remainingBalance' => 0];
+        $utilities = $groupedExpenses->get('Utilities', [
+            'data' => [], 
+            'remainingBalance' => 0,
+            'totalAllocated' => 0
+        ]);
+        
+        $salaries = $groupedExpenses->get('Salaries', [
+            'data' => [], 
+            'remainingBalance' => 0,
+            'totalAllocated' => 0
+        ]);
+        
+        $pettyCash = $groupedExpenses->get('Petty Cash', [
+            'data' => [], 
+            'remainingBalance' => 0,
+            'totalAllocated' => 0
+        ]);
+        
+        $maintenance = $groupedExpenses->get('Maintenance', [
+            'data' => [], 
+            'remainingBalance' => 0,
+            'totalAllocated' => 0
+        ]);
+        
+        $supplies = $groupedExpenses->get('Supplies', [
+            'data' => [], 
+            'remainingBalance' => 0,
+            'totalAllocated' => 0
+        ]);
     
         return view('ManageBudget.ExpenseTracking', compact('utilities', 'salaries', 'pettyCash', 'maintenance', 'supplies'));
     }

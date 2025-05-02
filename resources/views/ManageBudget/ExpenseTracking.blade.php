@@ -1,5 +1,4 @@
 <x-app>
-@include('Components.navbar')
 @section('title', 'Expense Tracking')
 <link rel="stylesheet" href="{{ asset('admin_assets/vendor/font-awesome-free/css/all.min.css') }}">
 <link rel="stylesheet" href="{{ asset('admin_assets/css/profilecss.css') }}">
@@ -17,7 +16,7 @@
                         <!-- utilities -->
                         <div class="col-12 col-sm-6 col-md-4 mb-4">
                             <div class="card shadow-sm">
-                                <div class="card-header bg-primary text-white">
+                                <div class="card-header text-white">
                                     <h5 class="card-title mb-0">Utilities</h5>
                                 </div>
                                 <div class="card-body">
@@ -29,7 +28,7 @@
                         <!-- salaries -->
                         <div class="col-12 col-sm-6 col-md-4 mb-4">
                             <div class="card shadow-sm">
-                                <div class="card-header bg-success text-white">
+                                <div class="card-header text-white">
                                     <h5 class="card-title mb-0">Salaries</h5>
                                 </div>
                                 <div class="card-body">
@@ -41,7 +40,7 @@
                         <!-- petty cash -->
                         <div class="col-12 col-sm-6 col-md-4 mb-4">
                             <div class="card shadow-sm">
-                                <div class="card-header bg-info text-white">
+                                <div class="card-header text-white">
                                     <h5 class="card-title mb-0">Petty Cash</h5>
                                 </div>
                                 <div class="card-body">
@@ -55,7 +54,7 @@
                         <!-- maintenance -->
                         <div class="col-12 col-sm-6 col-md-4">
                             <div class="card shadow-sm">
-                                <div class="card-header bg-warning text-white">
+                                <div class="card-header text-white">
                                     <h5 class="card-title mb-0">Maintenance</h5>
                                 </div>
                                 <div class="card-body">
@@ -67,7 +66,7 @@
                         <!-- supplies -->
                         <div class="col-12 col-sm-6 col-md-4">
                             <div class="card shadow-sm">
-                                <div class="card-header bg-danger text-white">
+                                <div class="card-header text-white">
                                     <h5 class="card-title mb-0">Supplies</h5>
                                 </div>
                                 <div class="card-body">
@@ -85,16 +84,24 @@
     <script>
         const utilitiesData = @json($utilities['data']);
         const utilitiesBalance = @json($utilities['remainingBalance']);
+        const utilitiesTotalAllocated = @json($utilities['totalAllocated']);
+        
         const salariesData = @json($salaries['data']);
         const salariesBalance = @json($salaries['remainingBalance']);
+        const salariesTotalAllocated = @json($salaries['totalAllocated']);
+        
         const pettyCashData = @json($pettyCash['data']);
         const pettyCashBalance = @json($pettyCash['remainingBalance']);
+        const pettyCashTotalAllocated = @json($pettyCash['totalAllocated']);
+        
         const maintenanceData = @json($maintenance['data']);
         const maintenanceBalance = @json($maintenance['remainingBalance']);
+        const maintenanceTotalAllocated = @json($maintenance['totalAllocated']);
+        
         const suppliesData = @json($supplies['data']);
         const suppliesBalance = @json($supplies['remainingBalance']);
+        const suppliesTotalAllocated = @json($supplies['totalAllocated']);
     </script>
     <script src="{{ asset('codes-js/expense-tracking.js') }}"></script>
-
 </body>
 </x-app>

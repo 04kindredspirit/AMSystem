@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\StudentList;
 use App\Models\User;
 use App\Models\Payment;
+use App\Models\ActivityLog;
+use App\Models\CategoryAllocation;
+use App\Models\ExpenseType;
 use Carbon\Carbon;
 
 class SuperadminController extends Controller
@@ -36,7 +39,36 @@ class SuperadminController extends Controller
                 ->sum('paymentAmount');
         }
 
+        $expenseTypes = ExpenseType::with(['categoryAllocations', 'expenses'])->get();
+
+        // Initialize array for balances
+        $expenseBalances = [];
+
+        foreach ($expenseTypes as $type) {
+            // Total allocated amount for this expense type
+            $allocated = $type->categoryAllocations->sum('amount');
+
+            // Total spent amount (from expenses relationship)
+            $spent = $type->expenses->sum('amount');
+
+            // Remaining balance
+            $remaining = $allocated - $spent;
+
+            // Calculate percentage remaining (for progress bars or color coding)
+            $percentageRemaining = $allocated > 0 ? ($remaining / $allocated) * 100 : 0;
+
+            // Store in array
+            $expenseBalances[$type->name] = [
+                'allocated' => $allocated,
+                'spent' => $spent,
+                'remaining' => $remaining,
+                'percentage' => $percentageRemaining
+            ];
+        }
+
+        $logs = ActivityLog::orderBy('created_at', 'DESC')->get();
+
         return view('superadmin.dashboard', compact('totalStudents', 'totalAccounts', 
-        'monthlyEarnings', 'annualEarnings', 'monthlyEarningsData'));
+        'monthlyEarnings', 'annualEarnings', 'monthlyEarningsData', 'logs', 'expenseBalances'));
     }
 }
