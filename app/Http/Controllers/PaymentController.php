@@ -20,9 +20,14 @@ class PaymentController
 
     public function paymentRecords()
     {
-        $payment = Payment::orderBy('created_at', 'DESC')->get();
+        $payment = Payment::where('record_type', 'payment')
+        ->orderBy('created_at', 'DESC')
+        ->get();
 
-        return view('PaymentRecords.paymentrecords', compact('payment'));
+        return view('PaymentRecords.paymentrecords', [
+            'payment' => $payment,
+            'showRecordType' => false
+        ]);
     }
 
     public function checkPaymentPeriod(Request $request)
@@ -41,7 +46,7 @@ class PaymentController
 
         // check if the student has already paid for this period in the current grade level
         $existingPayment = Payment::where('studentLrn', $studentLrn)
-            ->where('studentPayment_section', $student->studentSection) // scope to current grade level
+            ->where('studentPayment_section', $student->studentSection)
             ->where('paymentPeriod', $paymentPeriod)
             ->first();
 
@@ -55,7 +60,7 @@ class PaymentController
      */
     public function save(Request $request)
     {
-        // Always validate these fields
+        // field validations
         $validatedData = $request->validate([
             'paymentDate' => 'required|date',
             'paymentReceipt' => 'required|string|unique:payment_records,paymentOR',
@@ -68,7 +73,7 @@ class PaymentController
             'paymentMode' => 'required|string',
         ]);
 
-        // Conditionally validate paymentReference (ONLY if GCash or Cheque)
+        // payment validation
         if (in_array($request->paymentMode, ['GCash', 'Cheque'])) {
             $request->validate([
                 'paymentReference' => [
@@ -78,8 +83,6 @@ class PaymentController
                 ],
             ]);
         }
-
-        // No need to check unique manually anymore; Laravel validation handles it above
 
         $student = StudentList::where('studentLRN', $request->paymentLrn)->first();
 
@@ -113,7 +116,7 @@ class PaymentController
         $payment->paymentPeriod = $request->paymentPeriod;
         $payment->balance = $balance;
         $payment->MOP = $request->paymentMode;
-        $payment->ReferenceNo = $request->paymentReference; // Can be null, no problem
+        $payment->ReferenceNo = $request->paymentReference;
         $payment->user_id = auth()->id();
         $payment->save();
 

@@ -52,7 +52,7 @@ function updateCategoryTitleColor(canvasId, remainingBalance, totalAllocated) {
     );
 
     // applying the text color changing
-    if (percentRemaining <= 10) {
+    if (remainingBalance === 0 || percentRemaining <= 10) {
         cardTitle.classList.add("text-danger");
     } else if (percentRemaining <= 50) {
         cardTitle.classList.add("text-warning");

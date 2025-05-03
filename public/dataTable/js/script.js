@@ -65,6 +65,7 @@ new DataTable("#expenseTable", {
 });
 
 new DataTable("#paymentTable", {
+    columnDefs: [{ targets: 7, visible: false }],
     scrollX: true,
     order: [],
     language: {

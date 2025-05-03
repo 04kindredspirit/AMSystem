@@ -229,7 +229,7 @@
 
     <script>
         $(document).ready(function() {
-    // Initialize discount fields
+    // initializtion on discount field
     function initializeDiscountFields() {
         const discountType = $('#discountSelect').val();
         const customDiscountInput = $('#custom_discount');
@@ -246,7 +246,7 @@
         }
     }
 
-    // Handle discount selection change
+    // this code handle the discount selection change
     $('#discountSelect').change(function() {
         const selectedOption = $(this).find('option:selected');
         const discountPercentage = selectedOption.data('percentage');
@@ -265,7 +265,7 @@
         }
     });
 
-    // Initialize on page load
+    // initialize the page on load
     initializeDiscountFields();
 });
     </script>

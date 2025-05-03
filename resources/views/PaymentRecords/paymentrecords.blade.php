@@ -51,7 +51,7 @@
                     </div>
                 @endif
                 <div class="table-responsive">
-                    <table id="paymentTable" class="table table-striped table-hover" style="width:100%">
+                    <table id="paymentTable" class="table table-striped table-hover" style="min-width: 1200px;">
                         <thead class="table-primary"  style="font-size: 12px">
                             <tr>
                                 <th class="text-center">Date</th>

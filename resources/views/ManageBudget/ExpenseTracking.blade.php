@@ -1,4 +1,5 @@
 <x-app>
+@include('Components.navbar')
 @section('title', 'Expense Tracking')
 <link rel="stylesheet" href="{{ asset('admin_assets/vendor/font-awesome-free/css/all.min.css') }}">
 <link rel="stylesheet" href="{{ asset('admin_assets/css/profilecss.css') }}">

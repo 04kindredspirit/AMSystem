@@ -41,7 +41,7 @@
                     </div>
                 @endif
                 <div class="table-responsive table-sm">
-                    <table id="myTable" class="table table-striped table-hover text-center" style="width:100%">
+                    <table id="myTable" class="table table-striped table-hover text-center" style="min-width: 1000px;">
                         <thead class="table-primary">
                             <tr>
                                 <th class="text-center"></th>

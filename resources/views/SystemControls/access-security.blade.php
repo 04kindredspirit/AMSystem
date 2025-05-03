@@ -37,15 +37,15 @@
                 @endif
                 <div class="table-responsive table-sm">
                     <table class="table table-striped table table-hover" style="width:100%">
-                        <thead class="table-primary text-center">
+                        <thead class="table-primary">
                             <tr>
                                 <th></th>
                                 <th>Role</th>
                                 <th>Name</th>
                                 <th>Email Address</th>
                                 <th>Phone Number</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>

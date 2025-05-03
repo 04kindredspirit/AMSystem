@@ -46,10 +46,8 @@
                         <thead class="table-primary">
                             <tr>
                                 <th class="text-center">Full Name</th>
-                                <th class="text-center">Birthday</th>
                                 <th class="text-center">Mobile</th>
                                 <th class="text-center">Email</th>
-                                <th class="text-center">Occupation</th>
                                 <th class="text-center">Address</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -59,15 +57,13 @@
                                 @foreach($parents as $prnts)
                                     <tr>
                                         <td><a href="{{ route('ParentDirectory.show', $prnts->id) }}">{{ $prnts->parentFirst_name ?? '' }} {{ $prnts->parentMiddle_name ?? '' }} {{ $prnts->parentLast_name ?? '' }}</a></td>
-                                        <td style="font-size: 13px;">{{ $prnts->parentBirthdate ?? '' }}</td>
-                                        <td style="font-size: 13px;">{{ $prnts->parentMobile_number ?? '' }}</td>
-                                        <td style="font-size: 13px;">{{ $prnts->parentEmail ?? '' }}</td>
-                                        <td style="font-size: 13px;">{{ $prnts->parentOccupation ?? '' }}</td>
-                                        <td style="font-size: 13px;">{{ $prnts->parentAddress ?? '' }}</td>
+                                        <td>{{ $prnts->parentMobile_number ?? '' }}</td>
+                                        <td>{{ $prnts->parentEmail ?? '' }}</td>
+                                        <td>{{ $prnts->parentAddress ?? '' }}</td>
                                         <td class="text-center d-flex justify-content-between">
-                                            <a href="{{ route('ParentDirectory.show', $prnts->id) }}" type="button" class="btn btn-secondary" style="font-size: 12px;"><i class="fas fa-eye"></i> View</a>
+                                            <a href="{{ route('ParentDirectory.show', $prnts->id) }}" type="button" class="btn btn-secondary" style="font-size:7px;"><i class="fas fa-eye"></i> View</a>
                                             @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant')
-                                            <a href="{{ route('ParentDirectory.edit', $prnts->id) }}" type="button" class="btn btn-warning mx-1" style="font-size: 12px;"><i class="fas fa-edit"></i> Edit</a>
+                                            <a href="{{ route('ParentDirectory.edit', $prnts->id) }}" type="button" class="btn btn-warning mx-1" style="font-size:7px;"><i class="fas fa-edit"></i> Edit</a>
                                             @endif
                                             <!-- button trigger for remove modal -->
                                             @if(auth()->user()->role != 'Teacher' && auth()->user()->role !='Accountant' && auth()->user()->role !='SuperAdmin')

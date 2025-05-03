@@ -205,7 +205,6 @@
         <div class="container-fluid" style="padding: 0; margin-0;">
             {{ $slot }}
         </div>
-
     </div>
 
     <!-- Scroll to Top Button-->
